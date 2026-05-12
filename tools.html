@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>재테크 계산기: 적립식·복리·세액공제·배당 계산 | 머니네스트</title>
+  <meta name="description" content="적립식 투자 계산기, 복리 계산기, 연금 세액공제 계산기, 배당 포트폴리오 계산기를 한 곳에서 무료로 사용하세요." />
+  <meta name="keywords" content="재테크 계산기, 적립식 투자 계산기, 복리 계산기, 세액공제 계산기, 배당 계산기" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://moneynest.vercel.app/tools.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="재테크 계산기 모음 | 머니네스트" />
+  <meta property="og:description" content="적립식·복리·세액공제·배당 계산기를 무료로 이용하세요." />
+  <meta property="og:url" content="https://moneynest.vercel.app/tools.html" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .tools-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .tool-tab { padding:10px 20px; border:2px solid var(--blue); border-radius:24px; background:#fff; color:var(--blue); font-weight:600; cursor:pointer; transition:all .2s; font-size:0.95rem; }
+    .tool-tab.active, .tool-tab:hover { background:var(--blue); color:#fff; }
+    .tool-panel { display:none; }
+    .tool-panel.active { display:block; }
+    .calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+    @media(max-width:768px){ .calc-grid { grid-template-columns:1fr; } }
+    .calc-form { background:var(--blue-pale); border-radius:16px; padding:28px; }
+    .calc-result { background:#fff; border:2px solid var(--blue); border-radius:16px; padding:28px; }
+    .form-group { margin-bottom:20px; }
+    .form-label { display:block; font-weight:600; margin-bottom:6px; color:var(--text); }
+    .form-hint { font-size:0.82rem; color:#888; margin-top:4px; }
+    .form-input { width:100%; padding:10px 14px; border:1.5px solid #d0dce8; border-radius:8px; font-size:1rem; box-sizing:border-box; }
+    .form-input:focus { outline:none; border-color:var(--blue); }
+    .calc-btn { width:100%; padding:13px; background:var(--blue); color:#fff; border:none; border-radius:10px; font-size:1rem; font-weight:700; cursor:pointer; }
+    .calc-btn:hover { background:var(--blue-mid); }
+    .result-title { font-size:0.9rem; color:#666; margin-bottom:4px; }
+    .result-value { font-size:1.6rem; font-weight:800; color:var(--blue); margin-bottom:16px; }
+    .result-breakdown { font-size:0.9rem; color:#555; line-height:1.8; }
+    .result-breakdown span { color:var(--blue); font-weight:600; }
+    .chart-wrap { margin-top:24px; position:relative; height:260px; }
+    .tool-section-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+    .tool-section-desc { color:#555; margin-bottom:28px; font-size:0.95rem; }
+    .result-tag { display:inline-block; background:var(--green-pale,#e8f5e9); color:#2e7d32; font-size:0.82rem; font-weight:600; padding:3px 10px; border-radius:12px; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><div class="logo-icon">M</div><span class="logo-text">머니<span>네스트</span></span></a>
+      <nav class="nav">
+        <a href="index.html">홈</a><a href="compare.html">비교검색</a>
+        <a href="articles/etf-beginner-guide.html">ETF 투자</a><a href="articles/dividend-investing-guide.html">배당주</a>
+        <a href="articles/pension-savings-irp.html">연금·IRP</a><a href="about.html">소개</a>
+      </nav>
+      <button class="hamburger" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav">
+    <a href="index.html">홈</a><a href="compare.html">비교검색</a>
+    <a href="articles/etf-beginner-guide.html">ETF 투자</a><a href="articles/dividend-investing-guide.html">배당주</a>
+    <a href="articles/pension-savings-irp.html">연금·IRP</a><a href="about.html">소개</a><a href="contact.html">문의하기</a>
+  </nav>
+</header>
+
+<main class="section">
+  <div class="container">
+    <div style="max-width:900px;margin:0 auto;">
+      <div style="margin-bottom:32px;">
+        <h1 style="font-size:1.8rem;font-weight:800;margin-bottom:8px;">재테크 계산기</h1>
+        <p style="color:#555;">투자 수익, 세액공제, 배당 포트폴리오를 직접 계산해보세요.</p>
+      </div>
+      <div class="ad-unit ad-unit-horizontal" style="margin-bottom:28px;"><span>광고 영역</span></div>
+
+      <div class="tools-tabs">
+        <button class="tool-tab active" onclick="switchTab('accumulate')">적립식 투자</button>
+        <button class="tool-tab" onclick="switchTab('compound')">복리 계산기</button>
+        <button class="tool-tab" onclick="switchTab('taxsave')">세액공제 계산기</button>
+        <button class="tool-tab" onclick="switchTab('dividend')">배당 계산기</button>
+      </div>
+
+      <!-- 적립식 투자 계산기 -->
+      <div class="tool-panel active" id="panel-accumulate">
+        <div class="tool-section-title">적립식 투자 수익 계산기</div>
+        <div class="tool-section-desc">매달 일정 금액을 투자했을 때 미래 자산을 계산합니다. 예금·ETF·부동산 수익률을 비교해보세요.</div>
+        <div class="calc-grid">
+          <div class="calc-form">
+            <div class="form-group">
+              <label class="form-label">월 투자 금액 (만 원)</label>
+              <input type="number" class="form-input" id="acc-monthly" value="50" min="1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">연간 수익률 (%)</label>
+              <input type="number" class="form-input" id="acc-rate" value="8" step="0.1" />
+              <div class="form-hint">예금 3~4%, ETF(S&P500) 7~10%, 배당주 8~12%</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">투자 기간 (년)</label>
+              <input type="number" class="form-input" id="acc-years" value="20" min="1" max="50" />
+            </div>
+            <button class="calc-btn" onclick="calcAccumulate()">계산하기</button>
+          </div>
+          <div class="calc-result">
+            <div class="result-tag">계산 결과</div>
+            <div class="result-title">최종 자산</div>
+            <div class="result-value" id="acc-result">-</div>
+            <div class="result-breakdown" id="acc-breakdown">위 조건을 입력 후 계산해보세요.</div>
+            <div class="chart-wrap"><canvas id="accChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 복리 계산기 -->
+      <div class="tool-panel" id="panel-compound">
+        <div class="tool-section-title">복리 계산기</div>
+        <div class="tool-section-desc">초기 투자금에 복리가 적용될 때 미래 자산을 계산합니다. 투자 기간에 따른 복리 효과를 확인하세요.</div>
+        <div class="calc-grid">
+          <div class="calc-form">
+            <div class="form-group">
+              <label class="form-label">초기 투자금 (만 원)</label>
+              <input type="number" class="form-input" id="comp-principal" value="1000" min="1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">연간 수익률 (%)</label>
+              <input type="number" class="form-input" id="comp-rate" value="8" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">투자 기간 (년)</label>
+              <input type="number" class="form-input" id="comp-years" value="30" min="1" max="50" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">복리 계산 주기</label>
+              <select class="form-input" id="comp-freq">
+                <option value="1">연 1회 (연복리)</option>
+                <option value="12" selected>월 12회 (월복리)</option>
+                <option value="365">일 365회 (일복리)</option>
+              </select>
+            </div>
+            <button class="calc-btn" onclick="calcCompound()">계산하기</button>
+          </div>
+          <div class="calc-result">
+            <div class="result-tag">계산 결과</div>
+            <div class="result-title">최종 자산</div>
+            <div class="result-value" id="comp-result">-</div>
+            <div class="result-breakdown" id="comp-breakdown">위 조건을 입력 후 계산해보세요.</div>
+            <div class="chart-wrap"><canvas id="compChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 세액공제 계산기 -->
+      <div class="tool-panel" id="panel-taxsave">
+        <div class="tool-section-title">연금 세액공제 계산기</div>
+        <div class="tool-section-desc">연금저축·IRP 납입 시 받을 수 있는 세액공제 금액을 계산합니다.</div>
+        <div class="calc-grid">
+          <div class="calc-form">
+            <div class="form-group">
+              <label class="form-label">총급여 (만 원/년)</label>
+              <input type="number" class="form-input" id="tax-salary" value="5000" />
+              <div class="form-hint">연봉(세전). 종합소득자는 종합소득금액 입력</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">연금저축 연간 납입액 (만 원)</label>
+              <input type="number" class="form-input" id="tax-pension" value="400" min="0" max="600" />
+              <div class="form-hint">최대 600만 원 (세액공제 기준)</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">IRP 연간 납입액 (만 원)</label>
+              <input type="number" class="form-input" id="tax-irp" value="300" min="0" max="900" />
+              <div class="form-hint">연금저축+IRP 합산 최대 900만 원</div>
+            </div>
+            <button class="calc-btn" onclick="calcTax()">계산하기</button>
+          </div>
+          <div class="calc-result">
+            <div class="result-tag">계산 결과</div>
+            <div class="result-title">연간 세액공제 환급액</div>
+            <div class="result-value" id="tax-result">-</div>
+            <div class="result-breakdown" id="tax-breakdown">위 조건을 입력 후 계산해보세요.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 배당 계산기 -->
+      <div class="tool-panel" id="panel-dividend">
+        <div class="tool-section-title">배당 포트폴리오 계산기</div>
+        <div class="tool-section-desc">배당 투자 시 연간 배당금과 배당 재투자 후 미래 자산을 계산합니다.</div>
+        <div class="calc-grid">
+          <div class="calc-form">
+            <div class="form-group">
+              <label class="form-label">투자 원금 (만 원)</label>
+              <input type="number" class="form-input" id="div-principal" value="3000" min="1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">현재 배당수익률 (%)</label>
+              <input type="number" class="form-input" id="div-yield" value="4" step="0.1" />
+              <div class="form-hint">예: 4% (국내 배당주 평균), 1.5% (S&P500)</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">연간 배당 성장률 (%)</label>
+              <input type="number" class="form-input" id="div-growth" value="5" step="0.1" />
+              <div class="form-hint">배당금이 매년 증가하는 비율</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">투자 기간 (년)</label>
+              <input type="number" class="form-input" id="div-years" value="20" min="1" max="50" />
+            </div>
+            <button class="calc-btn" onclick="calcDividend()">계산하기</button>
+          </div>
+          <div class="calc-result">
+            <div class="result-tag">계산 결과</div>
+            <div class="result-title">목표 연도 연간 배당금</div>
+            <div class="result-value" id="div-result">-</div>
+            <div class="result-breakdown" id="div-breakdown">위 조건을 입력 후 계산해보세요.</div>
+            <div class="chart-wrap"><canvas id="divChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box warning" style="margin-top:40px;">
+        <div class="info-box-title">⚠️ 계산기 이용 안내</div>
+        <p>본 계산기는 참고용이며, 실제 수익률은 시장 상황에 따라 달라질 수 있습니다. 세금·수수료가 반영되지 않은 세전 수익 기준입니다. 투자 결정 전 전문가와 상담하세요.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="newsletter"><div class="container"><h2>📬 재테크 정보를 가장 먼저 받아보세요</h2><p>매주 1회, 꼭 알아야 할 재테크 핵심 정보를 이메일로 보내드립니다.</p><form class="newsletter-form" novalidate><input type="email" placeholder="이메일 주소를 입력하세요" required /><button type="submit" class="btn btn-green">무료 구독</button></form></div></section>
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="footer-logo"><div class="footer-logo-icon">M</div><span class="footer-logo-text">머니네스트</span></div><p>스마트한 재테크, 올바른 정보로 시작하세요.</p></div>
+    <div class="footer-col"><h4>계산기</h4><a href="tools.html">적립식 투자 계산기</a><a href="tools.html">복리 계산기</a><a href="tools.html">세액공제 계산기</a><a href="tools.html">배당 계산기</a></div>
+    <div class="footer-col"><h4>사이트 정보</h4><a href="compare.html">비교검색</a><a href="about.html">소개</a><a href="contact.html">문의하기</a></div>
+    <div class="footer-col"><h4>법적 고지</h4><a href="privacy.html">개인정보처리방침</a><a href="terms.html">이용약관</a></div>
+  </div>
+  <p class="footer-disclaimer">※ 본 콘텐츠는 정보 제공 목적으로만 작성되었으며, 투자 권유나 금융 조언이 아닙니다.</p>
+  <div class="footer-bottom"><span>© 2025 머니네스트. All rights reserved.</span></div>
+</div></footer>
+<script src="js/main.js"></script>
+<script>
+let accChartInst = null, compChartInst = null, divChartInst = null;
+
+function switchTab(name) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function fmt(n) {
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억 원';
+  if (n >= 10000) return (n / 10000).toFixed(0) + '만 원';
+  return n.toFixed(0) + ' 원';
+}
+
+function calcAccumulate() {
+  const monthly = parseFloat(document.getElementById('acc-monthly').value) * 10000;
+  const rate = parseFloat(document.getElementById('acc-rate').value) / 100 / 12;
+  const months = parseInt(document.getElementById('acc-years').value) * 12;
+  const totalInput = monthly * months;
+  let balance = 0;
+  const labels = [], data = [], inputData = [];
+  for (let m = 1; m <= months; m++) {
+    balance = (balance + monthly) * (1 + rate);
+    if (m % 12 === 0) {
+      labels.push(m/12 + '년');
+      data.push(Math.round(balance / 10000));
+      inputData.push(Math.round(monthly * m / 10000));
+    }
+  }
+  const profit = balance - totalInput;
+  document.getElementById('acc-result').textContent = fmt(balance);
+  document.getElementById('acc-breakdown').innerHTML =
+    `원금: <span>${fmt(totalInput)}</span><br>수익: <span>${fmt(profit)}</span><br>수익률: <span>${(profit/totalInput*100).toFixed(1)}%</span>`;
+  if (accChartInst) accChartInst.destroy();
+  accChartInst = new Chart(document.getElementById('accChart'), {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: '총자산', data, borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.08)', fill:true, tension:0.3 },
+      { label: '투자원금', data: inputData, borderColor:'#94a3b8', borderDash:[5,5], fill:false, tension:0.3 }
+    ]},
+    options: { plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>v+'만'}}} }
+  });
+}
+
+function calcCompound() {
+  const principal = parseFloat(document.getElementById('comp-principal').value) * 10000;
+  const annualRate = parseFloat(document.getElementById('comp-rate').value) / 100;
+  const years = parseInt(document.getElementById('comp-years').value);
+  const freq = parseInt(document.getElementById('comp-freq').value);
+  const r = annualRate / freq;
+  const n = years * freq;
+  const final = principal * Math.pow(1 + r, n);
+  const profit = final - principal;
+  const labels = [], data = [];
+  for (let y = 1; y <= years; y++) {
+    const val = principal * Math.pow(1 + r, y * freq);
+    labels.push(y + '년');
+    data.push(Math.round(val / 10000));
+  }
+  document.getElementById('comp-result').textContent = fmt(final);
+  document.getElementById('comp-breakdown').innerHTML =
+    `초기 투자금: <span>${fmt(principal)}</span><br>수익: <span>${fmt(profit)}</span><br>수익률: <span>${(profit/principal*100).toFixed(1)}%</span>`;
+  if (compChartInst) compChartInst.destroy();
+  compChartInst = new Chart(document.getElementById('compChart'), {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label: '복리 자산', data, backgroundColor:'rgba(37,99,235,0.7)' }
+    ]},
+    options: { plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>v+'만'}}} }
+  });
+}
+
+function calcTax() {
+  const salary = parseFloat(document.getElementById('tax-salary').value);
+  const pensionInput = parseFloat(document.getElementById('tax-pension').value);
+  const irpInput = parseFloat(document.getElementById('tax-irp').value);
+  const total = Math.min(pensionInput + irpInput, 900);
+  const pensionCap = Math.min(pensionInput, 600);
+  const effective = Math.min(pensionCap + irpInput, 900);
+  const rate = salary <= 5500 ? 0.165 : 0.132;
+  const rateLabel = salary <= 5500 ? '16.5%' : '13.2%';
+  const refund = Math.round(effective * 10000 * rate);
+  document.getElementById('tax-result').textContent = refund.toLocaleString() + ' 원';
+  document.getElementById('tax-breakdown').innerHTML =
+    `공제 대상 납입액: <span>${effective}만 원</span><br>적용 공제율: <span>${rateLabel}</span>` +
+    (salary <= 5500 ? ' (총급여 5,500만 원 이하)' : ' (총급여 5,500만 원 초과)') +
+    `<br><br><strong>연금저축 한도 안내</strong><br>` +
+    `연금저축 최대 600만 원, IRP 포함 합산 최대 900만 원 한도 내 공제됩니다.<br><br>` +
+    `매월 ${Math.round(effective/12)}만 원 납입 시 연 <span>${refund.toLocaleString()}원</span> 환급 효과`;
+}
+
+function calcDividend() {
+  const principal = parseFloat(document.getElementById('div-principal').value) * 10000;
+  const yieldRate = parseFloat(document.getElementById('div-yield').value) / 100;
+  const growthRate = parseFloat(document.getElementById('div-growth').value) / 100;
+  const years = parseInt(document.getElementById('div-years').value);
+  const labels = [], data = [];
+  let cumDiv = 0;
+  for (let y = 1; y <= years; y++) {
+    const annualDiv = principal * yieldRate * Math.pow(1 + growthRate, y - 1);
+    cumDiv += annualDiv;
+    labels.push(y + '년');
+    data.push(Math.round(annualDiv / 10000));
+  }
+  const finalDiv = principal * yieldRate * Math.pow(1 + growthRate, years - 1);
+  const monthlyDiv = finalDiv / 12;
+  document.getElementById('div-result').textContent = fmt(finalDiv);
+  document.getElementById('div-breakdown').innerHTML =
+    `첫 해 배당금: <span>${fmt(principal * yieldRate)}</span><br>` +
+    `${years}년 후 연간 배당: <span>${fmt(finalDiv)}</span><br>` +
+    `${years}년 후 월 배당 환산: <span>${fmt(monthlyDiv)}</span><br>` +
+    `배당금 누계: <span>${fmt(cumDiv)}</span>`;
+  if (divChartInst) divChartInst.destroy();
+  divChartInst = new Chart(document.getElementById('divChart'), {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label: '연간 배당금', data, backgroundColor:'rgba(22,163,74,0.7)' }
+    ]},
+    options: { plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>v+'만'}}} }
+  });
+}
+
+// 페이지 로드 시 첫 계산 실행
+window.addEventListener('DOMContentLoaded', () => {
+  calcAccumulate();
+});
+</script>
+</body>
+</html>

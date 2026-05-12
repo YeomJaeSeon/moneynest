@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>배당주 복리투자로 노후 준비하는 방법: 30년 시뮬레이션과 종목 선택 기준 | 머니네스트</title>
+  <meta name="description" content="PER 15 이하, 배당수익률 4% 이상, 꾸준한 배당 성장 종목에 복리로 재투자하면 30년 후 어떻게 될까? 실제 시뮬레이션 차트와 종목 선택 기준을 공개합니다." />
+  <meta name="keywords" content="배당주 투자, 배당 복리, 배당성장주, 배당수익률, KB금융 배당, 자사주 소각, 노후준비 투자, 배당주 장기투자" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://moneynest.vercel.app/articles/dividend-investing-guide.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="배당주 복리투자로 노후 준비하는 방법 | 머니네스트" />
+  <meta property="og:description" content="PER 15 이하, 배당수익률 4% 이상 종목에 복리 재투자 시 30년 후 자산 시뮬레이션 공개." />
+  <meta property="og:url" content="https://moneynest.vercel.app/articles/dividend-investing-guide.html" />
+  <meta property="og:site_name" content="머니네스트" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "배당주 복리투자로 노후 준비하는 방법: 30년 시뮬레이션과 종목 선택 기준",
+    "description": "PER 15 이하, 배당수익률 4% 이상 배당성장주에 복리 재투자 시 30년 자산 변화 시뮬레이션",
+    "datePublished": "2025-05-08",
+    "dateModified": "2025-05-08",
+    "publisher": { "@type": "Organization", "name": "머니네스트", "url": "https://moneynest.vercel.app" }
+  }
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .chart-container {
+      position: relative; background: white;
+      border: 1px solid var(--gray-2); border-radius: var(--radius);
+      padding: 24px; margin: 28px 0;
+    }
+    .chart-title {
+      font-size: .95rem; font-weight: 700; color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .chart-subtitle {
+      font-size: .78rem; color: var(--gray-5); margin-bottom: 20px;
+    }
+    .chart-note {
+      font-size: .75rem; color: var(--gray-4); margin-top: 12px; line-height: 1.5;
+    }
+    .criteria-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0;
+    }
+    .criteria-card {
+      background: white; border: 1px solid var(--gray-2);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .criteria-card:hover { border-color: var(--blue-mid); }
+    .criteria-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .criteria-label { font-size: .8rem; font-weight: 700; color: var(--blue-mid); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; }
+    .criteria-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .criteria-desc { font-size: .85rem; color: var(--gray-6); line-height: 1.6; }
+    .highlight-num { font-size: 1.4rem; font-weight: 900; color: var(--blue-mid); }
+    .scenario-box {
+      background: linear-gradient(135deg, var(--blue-pale), var(--green-pale));
+      border: 1px solid var(--gray-2); border-radius: var(--radius);
+      padding: 24px; margin: 28px 0;
+    }
+    .scenario-box h3 { margin-bottom: 16px; }
+    .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .scenario-item { background: white; border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+    .scenario-label { font-size: .8rem; color: var(--gray-5); margin-bottom: 6px; }
+    .scenario-value { font-size: 1.3rem; font-weight: 900; }
+    .scenario-value.s1 { color: var(--gray-6); }
+    .scenario-value.s2 { color: var(--blue-mid); }
+    .scenario-value.s3 { color: #dc2626; }
+    @media (max-width: 600px) {
+      .criteria-grid { grid-template-columns: 1fr; }
+      .scenario-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="머니네스트 홈">
+        <div class="logo-icon">M</div>
+        <span class="logo-text">머니<span>네스트</span></span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="../index.html">홈</a>
+        <a href="../compare.html">비교검색</a>
+        <a href="etf-beginner-guide.html">ETF 투자</a>
+        <a href="dividend-investing-guide.html" class="active">배당주</a>
+        <a href="pension-savings-irp.html">연금·IRP</a>
+        <a href="../about.html">소개</a>
+      </nav>
+      <button class="hamburger" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" aria-label="모바일 메뉴">
+    <a href="../index.html">홈</a>
+    <a href="../compare.html">비교검색</a>
+    <a href="etf-beginner-guide.html">ETF 투자</a>
+    <a href="dividend-investing-guide.html">배당주</a>
+    <a href="pension-savings-irp.html">연금·IRP</a>
+    <a href="../about.html">소개</a>
+    <a href="../contact.html">문의하기</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="ad-unit ad-unit-horizontal" style="margin-top:20px;">
+    <span>광고 영역</span>
+  </div>
+</div>
+
+<main class="section">
+  <div class="container">
+    <div class="article-layout">
+
+      <article class="article-content">
+
+        <nav class="breadcrumb" aria-label="이동 경로">
+          <a href="../index.html">홈</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>ETF·주식 투자</span>
+          <span class="breadcrumb-sep">›</span>
+          <span>배당주 복리투자 가이드</span>
+        </nav>
+
+        <header class="article-header">
+          <span class="badge badge-blue">배당주 투자</span>
+          <h1 class="article-title">배당주 복리투자로 노후 준비하는 방법: 30년 시뮬레이션과 종목 선택 기준</h1>
+          <div class="article-meta">
+            <span class="article-meta-item">📅 2025년 5월 8일</span>
+            <span class="article-meta-item">⏱ 15분 읽기</span>
+            <span class="article-meta-item">💰 배당주 투자</span>
+          </div>
+        </header>
+
+        <div class="ad-unit ad-unit-horizontal">
+          <span>광고 영역</span>
+        </div>
+
+        <nav class="toc-box" aria-label="목차">
+          <div class="toc-title">📋 목차</div>
+          <ul class="toc-list">
+            <li><a href="#why-dividend">왜 배당주인가? 코스피 7000 시대의 전략</a></li>
+            <li><a href="#power-of-compound">배당 복리의 힘: 30년 시뮬레이션</a></li>
+            <li><a href="#selection">좋은 배당주 4가지 선택 기준</a></li>
+            <li><a href="#buyback">자사주 소각: 숨겨진 주주환원</a></li>
+            <li><a href="#stocks">주목할 배당성장주 목록</a></li>
+            <li><a href="#dividend-growth">배당금 성장 이력 비교</a></li>
+            <li><a href="#strategy">실전 배당투자 전략</a></li>
+          </ul>
+        </nav>
+
+        <div class="article-body">
+
+          <h2 id="why-dividend">왜 배당주인가? 코스피 7000 시대의 전략</h2>
+          <p>
+            코스피가 7,000을 돌파한 지금, 많은 투자자들이 단기 시세 차익을 좇고 있습니다. 하지만 주가가 높아질수록 단기 투자의 리스크도 커집니다. 반면 <strong>배당주 장기투자</strong>는 주가의 등락과 무관하게 꾸준한 현금 흐름을 만들어냅니다.
+          </p>
+          <p>
+            특히 <strong>배당을 재투자(복리)</strong>하면 시간이 흐를수록 눈덩이처럼 자산이 불어나는 '복리의 마법'을 경험할 수 있습니다. 워런 버핏이 "복리는 세계 8대 불가사의"라고 말한 이유가 바로 이것입니다.
+          </p>
+
+          <div class="info-box">
+            <div class="info-box-title">💡 배당주 투자의 핵심 장점</div>
+            <p>
+              <strong>① 현금흐름:</strong> 주가가 떨어져도 배당금은 꾸준히 들어옵니다.<br />
+              <strong>② 복리 효과:</strong> 배당금을 재투자하면 주식 수가 늘어나 다음 배당금도 증가합니다.<br />
+              <strong>③ 배당 성장:</strong> 이익이 꾸준히 늘어나는 기업은 매년 배당금도 올립니다.<br />
+              <strong>④ 심리적 안정:</strong> 하락장에도 배당 수익이 버팀목이 되어 흔들리지 않게 됩니다.
+            </p>
+          </div>
+
+          <h2 id="power-of-compound">배당 복리의 힘: 30년 시뮬레이션</h2>
+          <p>
+            초기 투자금 <strong>3,000만 원</strong>을 3가지 방식으로 30년간 운용했을 때의 결과를 비교해보겠습니다.
+          </p>
+
+          <div class="scenario-box">
+            <h3>📊 30년 후 자산 비교 (초기 투자 3,000만 원)</h3>
+            <div class="scenario-grid">
+              <div class="scenario-item">
+                <div class="scenario-label">🏦 은행 예금 (3.5%)</div>
+                <div class="scenario-value s1">약 8,400만 원</div>
+                <div style="font-size:.78rem;color:var(--gray-4);margin-top:4px;">원리금 재투자</div>
+              </div>
+              <div class="scenario-item">
+                <div class="scenario-label">💰 배당주 재투자 (연 10%)</div>
+                <div class="scenario-value s2">약 5억 2,000만 원</div>
+                <div style="font-size:.78rem;color:var(--gray-4);margin-top:4px;">배당5% + 주가상승5%</div>
+              </div>
+              <div class="scenario-item">
+                <div class="scenario-label">🚀 배당성장주 재투자 (연 12%)</div>
+                <div class="scenario-value s3">약 8억 9,800만 원</div>
+                <div style="font-size:.78rem;color:var(--gray-4);margin-top:4px;">배당성장+주가상승</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 복리 성장 차트 -->
+          <div class="chart-container">
+            <div class="chart-title">📈 투자 방식별 자산 성장 시뮬레이션</div>
+            <div class="chart-subtitle">초기 투자금 3,000만 원 기준 | 배당 전액 재투자 가정</div>
+            <canvas id="compoundChart" style="max-height:380px;"></canvas>
+            <div class="chart-note">
+              ※ 시뮬레이션 가정: 예금 연 3.5% 복리 / 배당주 재투자: 배당수익률 5% + 주가 연 5% 상승 (총 10%) / 배당성장주 재투자: 배당수익률 5% + 배당 연 8% 성장 + 주가 연 5% 상승 (총 약 12%)
+              <br />※ 세금, 거래비용 미포함. 과거 수익률이 미래를 보장하지 않습니다.
+            </div>
+          </div>
+
+          <p>
+            30년 후 차이가 극명합니다. 예금 <strong>8,400만 원</strong> vs 배당성장주 재투자 <strong>약 9억 원</strong>. 같은 3,000만 원이지만 결과는 10배 이상 차이가 납니다. 이것이 바로 <strong>배당 복리 투자의 힘</strong>입니다.
+          </p>
+
+          <h2 id="selection">좋은 배당주 4가지 선택 기준</h2>
+          <p>배당주라고 다 같은 배당주가 아닙니다. 아래 4가지 기준을 모두 충족하는 종목을 선택해야 장기 복리 투자가 가능합니다.</p>
+
+          <div class="criteria-grid">
+            <div class="criteria-card">
+              <div class="criteria-icon">📊</div>
+              <div class="criteria-label">기준 01</div>
+              <div class="criteria-title">PER <span class="highlight-num">15 이하</span></div>
+              <div class="criteria-desc">주가수익비율(PER)이 낮다는 건 기업의 이익 대비 주가가 저렴하다는 의미입니다. PER 15 이하는 저평가 구간으로, 하락 리스크가 낮습니다. 국내 은행주(PER 5~8)는 글로벌 기준에서도 매우 저평가입니다.</div>
+            </div>
+            <div class="criteria-card">
+              <div class="criteria-icon">💵</div>
+              <div class="criteria-label">기준 02</div>
+              <div class="criteria-title">배당수익률 <span class="highlight-num">4% 이상</span></div>
+              <div class="criteria-desc">현재 주가 기준 배당수익률이 4% 이상이어야 예금 금리 이상의 현금흐름을 확보할 수 있습니다. 5~7%대 배당수익률을 제공하는 국내 금융주들은 세계적으로도 경쟁력 있는 수준입니다.</div>
+            </div>
+            <div class="criteria-card">
+              <div class="criteria-icon">📈</div>
+              <div class="criteria-label">기준 03</div>
+              <div class="criteria-title">배당 <span class="highlight-num">꾸준한 성장</span></div>
+              <div class="criteria-desc">매년 배당이 오르는 기업이야말로 진짜 배당성장주입니다. 5년 이상 배당을 꾸준히 올린 이력이 있는 기업은 앞으로도 배당을 올릴 가능성이 높습니다. 배당 성장은 복리 효과를 가속화합니다.</div>
+            </div>
+            <div class="criteria-card">
+              <div class="criteria-icon">💹</div>
+              <div class="criteria-label">기준 04</div>
+              <div class="criteria-title">이익의 <span class="highlight-num">꾸준한 성장</span></div>
+              <div class="criteria-desc">배당은 이익에서 나옵니다. 이익이 꾸준히 늘어야 배당도 늘 수 있습니다. ROE(자기자본이익률) 10% 이상, 이익 성장이 5년 이상 지속된 기업을 우선적으로 검토하세요.</div>
+            </div>
+          </div>
+
+          <h2 id="buyback">자사주 소각: 숨겨진 주주환원</h2>
+          <p>
+            배당수익률이 낮아도 주주환원이 탁월한 기업이 있습니다. 바로 <strong>자사주를 대규모로 소각하는 기업</strong>입니다. 자사주 소각이란 회사가 자사 주식을 시장에서 매입해 소각(없애버리는)하는 것입니다.
+          </p>
+          <div class="info-box green">
+            <div class="info-box-title">✅ 자사주 소각의 효과</div>
+            <p>
+              총 주식 수가 줄어들면 → 주당 이익(EPS)이 증가 → 배당금도 자연스럽게 증가 → 주가도 상승합니다.<br />
+              <strong>KB금융, SK텔레콤, 현대차</strong> 등은 최근 수년간 공격적으로 자사주를 소각하고 있으며, 이는 배당수익률 수치에 포함되지 않는 '숨겨진 주주환원'입니다.
+            </p>
+          </div>
+          <p>
+            예를 들어 <strong>SK텔레콤</strong>의 경우 배당수익률은 약 4.8%지만, 자사주 소각까지 합산하면 실질 주주환원율은 7%를 넘습니다. KB금융도 배당+자사주소각 합산 주주환원율이 10%를 넘는 해도 있습니다.
+          </p>
+
+          <h2 id="stocks">주목할 배당성장주 목록</h2>
+          <p>아래는 2025년 기준 4가지 선택 기준을 충족하는 국내 주요 배당성장주입니다.</p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>종목</th>
+                <th>섹터</th>
+                <th>PER</th>
+                <th>배당수익률</th>
+                <th>5년 배당성장</th>
+                <th>자사주소각</th>
+                <th>시총</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>KB금융</strong></td><td>금융</td><td style="color:#059669;font-weight:700;">7.2</td><td style="color:#dc2626;font-weight:700;">6.2%</td><td>+12%/년</td><td>✓ 있음</td><td>32조</td></tr>
+              <tr><td><strong>하나금융지주</strong></td><td>금융</td><td style="color:#059669;font-weight:700;">6.1</td><td style="color:#dc2626;font-weight:700;">6.5%</td><td>+15%/년</td><td>✓ 있음</td><td>18조</td></tr>
+              <tr><td><strong>우리금융지주</strong></td><td>금융</td><td style="color:#059669;font-weight:700;">5.8</td><td style="color:#dc2626;font-weight:700;">7.0%</td><td>+18%/년</td><td>✓ 있음</td><td>14조</td></tr>
+              <tr><td><strong>기업은행</strong></td><td>금융</td><td style="color:#059669;font-weight:700;">5.4</td><td style="color:#dc2626;font-weight:700;">7.2%</td><td>+8%/년</td><td>-</td><td>12조</td></tr>
+              <tr><td><strong>맥쿼리인프라</strong></td><td>인프라</td><td>18.5</td><td style="color:#dc2626;font-weight:700;">7.8%</td><td>+5%/년</td><td>-</td><td>3.8조</td></tr>
+              <tr><td><strong>SK텔레콤</strong></td><td>통신</td><td>11.8</td><td>4.8%</td><td>+4%/년</td><td>✓ 대규모</td><td>18조</td></tr>
+              <tr><td><strong>삼성화재</strong></td><td>보험</td><td>8.9</td><td>4.5%</td><td>+20%/년</td><td>✓ 있음</td><td>28조</td></tr>
+              <tr><td><strong>KT&G</strong></td><td>소비재</td><td>12.4</td><td>5.2%</td><td>+6%/년</td><td>✓ 있음</td><td>13조</td></tr>
+              <tr><td><strong>현대차</strong></td><td>자동차</td><td style="color:#059669;font-weight:700;">6.5</td><td>4.2%</td><td>+30%/년</td><td>✓ 있음</td><td>52조</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.78rem;color:var(--gray-4);">※ 2025년 5월 기준 참고 데이터. 실제 투자 전 최신 데이터를 반드시 확인하세요.</p>
+
+          <h2 id="dividend-growth">배당금 성장 이력 비교</h2>
+          <p>배당이 매년 얼마나 성장했는지 확인해보겠습니다. 코로나19(2020년)로 인해 일부 종목에서 배당이 줄었지만, 이후 빠르게 회복·성장했음을 주목하세요.</p>
+
+          <!-- 배당 성장 차트 -->
+          <div class="chart-container">
+            <div class="chart-title">💰 주요 종목 주당 배당금 성장 이력 (2019~2024)</div>
+            <div class="chart-subtitle">단위: 원 | 2024년은 예상치 기준</div>
+            <canvas id="dividendGrowthChart" style="max-height:340px;"></canvas>
+            <div class="chart-note">
+              ※ 2020년은 코로나19로 인한 배당 축소 반영 | 출처: 각 사 공시 기준 참고 데이터
+            </div>
+          </div>
+
+          <p>
+            KB금융의 경우 2019년 주당 1,770원이었던 배당금이 2024년 약 3,600원으로 <strong>5년 만에 2배 이상</strong> 증가했습니다. 같은 금액으로 투자했어도 배당 수익률이 매년 자동으로 올라간다는 의미입니다. 이것이 배당성장주의 진짜 위력입니다.
+          </p>
+
+          <h2 id="strategy">실전 배당투자 전략</h2>
+
+          <h3>1. 분산 투자로 리스크 줄이기</h3>
+          <p>단일 종목 집중은 위험합니다. <strong>금융주 40%, 통신·인프라 30%, 소비재·기타 30%</strong> 비율로 섹터를 분산하세요. 또는 배당 ETF(TIGER 고배당, KODEX 배당가치 등)를 활용해 손쉽게 분산할 수도 있습니다.</p>
+
+          <h3>2. 배당 재투자 자동화</h3>
+          <p>배당금이 들어오는 즉시 같은 종목을 추가 매수하는 것이 복리 효과를 극대화하는 방법입니다. 분기 또는 반기마다 배당금으로 주식을 추가 매수하는 루틴을 만드세요.</p>
+
+          <h3>3. 연금계좌 활용</h3>
+          <p>배당주를 연금저축펀드·IRP 계좌에서 보유하면 배당소득세(15.4%)가 부과되지 않고 과세가 이연됩니다. 수령 시 3.3~5.5%만 납부하면 되므로, 일반 계좌 대비 훨씬 유리합니다.</p>
+
+          <div class="info-box green">
+            <div class="info-box-title">✅ 연금계좌 + 배당ETF = 최강 조합</div>
+            <p>연금저축펀드에서 <strong>TIGER 고배당</strong> ETF를 매수하면: 세액공제(16.5%) + 배당소득세 면제 + 복리 재투자가 모두 결합됩니다. 이것이 노후 자산 축적의 가장 효율적인 방법 중 하나입니다.</p>
+          </div>
+
+          <h3>4. 주가 하락 시 추가 매수</h3>
+          <p>배당수익률 = 주당배당금 ÷ 주가입니다. 주가가 떨어지면 배당수익률이 올라갑니다. 배당성장주가 시장 공포로 과도하게 하락했을 때 오히려 추가 매수 기회로 삼으세요. 이것이 배당투자가 하락장에서도 유리한 이유입니다.</p>
+
+          <div class="info-box warning">
+            <div class="info-box-title">⚠️ 배당주 투자 주의사항</div>
+            <p>
+              <strong>배당컷 리스크:</strong> 기업 이익이 급감하면 배당을 줄이거나 없앨 수 있습니다. 재무건전성(부채비율, 이익 추이)을 반드시 확인하세요.<br />
+              <strong>고배당 함정:</strong> 배당수익률이 유독 높은 종목은 주가가 이미 많이 하락했거나, 지속 불가능한 배당일 수 있습니다. 이익 대비 배당성향(payout ratio)이 70%를 넘으면 주의하세요.<br />
+              <strong>분산:</strong> 어떤 훌륭한 배당주도 단일 종목에 올인은 금물입니다.
+            </p>
+          </div>
+
+        </div><!-- /article-body -->
+
+        <div class="ad-unit ad-unit-horizontal">
+          <span>광고 영역</span>
+        </div>
+
+      </article>
+
+      <!-- ── 사이드바 ── -->
+      <aside class="article-sidebar">
+        <div class="sidebar-widget">
+          <div class="ad-unit ad-unit-rectangle">
+            <span>광고 영역 (300×250)</span>
+          </div>
+        </div>
+        <div class="sidebar-widget">
+          <div class="sidebar-widget-title">관련 아티클</div>
+          <ul class="related-list">
+            <li class="related-item">
+              <span class="related-num">01</span>
+              <a href="pension-savings-irp.html" class="related-title">연금저축펀드 vs IRP 완전 정복</a>
+            </li>
+            <li class="related-item">
+              <span class="related-num">02</span>
+              <a href="etf-beginner-guide.html" class="related-title">ETF 투자 완전 초보자 가이드</a>
+            </li>
+            <li class="related-item">
+              <span class="related-num">03</span>
+              <a href="isa-account-guide.html" class="related-title">ISA 계좌로 세금 아끼는 방법</a>
+            </li>
+            <li class="related-item">
+              <span class="related-num">04</span>
+              <a href="year-end-tax-saving.html" class="related-title">연말정산 환급 최대화 전략</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar-widget" style="background:var(--blue-pale);border-color:var(--blue-light);">
+          <div class="sidebar-widget-title" style="color:var(--blue);">🔍 배당주 직접 비교</div>
+          <p style="font-size:.85rem;color:var(--gray-6);margin-bottom:12px;">PER, 배당수익률, 자사주 소각 여부를 나란히 비교하세요.</p>
+          <a href="../compare.html#stock" class="btn btn-primary" style="width:100%;justify-content:center;">배당주 비교하러 가기 →</a>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<section class="newsletter" aria-label="뉴스레터 구독">
+  <div class="container">
+    <h2>📬 재테크 정보를 가장 먼저 받아보세요</h2>
+    <p>매주 1회, 꼭 알아야 할 재테크 핵심 정보를 이메일로 보내드립니다.</p>
+    <form class="newsletter-form" novalidate>
+      <input type="email" placeholder="이메일 주소를 입력하세요" aria-label="이메일 주소" required />
+      <button type="submit" class="btn btn-green">무료 구독</button>
+    </form>
+  </div>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">M</div>
+          <span class="footer-logo-text">머니네스트</span>
+        </div>
+        <p>스마트한 재테크, 올바른 정보로 시작하세요.<br />머니네스트는 투자, 절세, 부동산, 연금 등 실생활 금융 정보를 쉽게 전달합니다.</p>
+      </div>
+      <div class="footer-col">
+        <h4>재테크 가이드</h4>
+        <a href="etf-beginner-guide.html">ETF 투자 가이드</a>
+        <a href="dividend-investing-guide.html">배당주 복리투자</a>
+        <a href="pension-savings-irp.html">연금저축·IRP</a>
+        <a href="retirement-fund-irp.html">퇴직금·IRP</a>
+        <a href="isa-account-guide.html">ISA 계좌</a>
+      </div>
+      <div class="footer-col">
+        <h4>사이트 정보</h4>
+        <a href="../compare.html">비교검색</a>
+        <a href="../about.html">머니네스트 소개</a>
+        <a href="../contact.html">문의하기</a>
+      </div>
+      <div class="footer-col">
+        <h4>법적 고지</h4>
+        <a href="../privacy.html">개인정보처리방침</a>
+        <a href="../terms.html">이용약관</a>
+      </div>
+    </div>
+    <p class="footer-disclaimer">
+      ※ 머니네스트의 모든 콘텐츠는 정보 제공 목적으로만 작성되었으며, 투자 권유나 금융 조언이 아닙니다. 투자는 본인의 판단과 책임하에 이루어져야 하며, 투자 손실에 대한 책임은 투자자 본인에게 있습니다.
+    </p>
+    <div class="footer-bottom">
+      <span>© 2025 머니네스트. All rights reserved.</span>
+      <div>
+        <a href="../privacy.html">개인정보처리방침</a>
+        <a href="../terms.html">이용약관</a>
+        <a href="../contact.html">문의</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* ── 복리 성장 시뮬레이션 차트 ── */
+(function() {
+  const years = Array.from({length: 31}, (_, i) => i);
+  const init = 3000; // 만원
+
+  function compound(rate, n) { return +(init * Math.pow(1 + rate, n)).toFixed(0); }
+
+  const deposit    = years.map(n => compound(0.035, n));
+  const divReInvest = years.map(n => compound(0.10, n));
+  const growthDiv  = years.map(n => compound(0.12, n));
+
+  const ctx = document.getElementById('compoundChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: years.map(y => y + '년'),
+      datasets: [
+        {
+          label: '예금 (3.5%)',
+          data: deposit,
+          borderColor: '#9ca3af',
+          backgroundColor: 'rgba(156,163,175,.08)',
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+        },
+        {
+          label: '배당주 재투자 (연10%)',
+          data: divReInvest,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,.08)',
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+        },
+        {
+          label: '배당성장주 재투자 (연12%)',
+          data: growthDiv,
+          borderColor: '#dc2626',
+          backgroundColor: 'rgba(220,38,38,.08)',
+          borderWidth: 3,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { family: "'Noto Sans KR', sans-serif", size: 12 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString() + '만 원';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxTicksLimit: 11,
+            font: { family: "'Noto Sans KR', sans-serif", size: 11 }
+          },
+          grid: { color: 'rgba(0,0,0,.04)' }
+        },
+        y: {
+          ticks: {
+            callback: v => (v >= 10000 ? (v/10000).toFixed(0) + '억' : v.toLocaleString() + '만'),
+            font: { family: "'Noto Sans KR', sans-serif", size: 11 }
+          },
+          grid: { color: 'rgba(0,0,0,.04)' }
+        }
+      }
+    }
+  });
+})();
+
+/* ── 배당금 성장 차트 ── */
+(function() {
+  const years = ['2019', '2020', '2021', '2022', '2023', '2024(예상)'];
+  const ctx2 = document.getElementById('dividendGrowthChart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'KB금융',
+          data: [1770, 1390, 2490, 2950, 3060, 3600],
+          backgroundColor: 'rgba(37,99,235,.75)',
+          borderColor: '#2563eb',
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: '하나금융지주',
+          data: [1100, 600, 2400, 3000, 3400, 4000],
+          backgroundColor: 'rgba(5,150,105,.75)',
+          borderColor: '#059669',
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: 'KT&G',
+          data: [4400, 4400, 4800, 5000, 5200, 5400],
+          backgroundColor: 'rgba(217,119,6,.75)',
+          borderColor: '#d97706',
+          borderWidth: 1,
+          borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { family: "'Noto Sans KR', sans-serif", size: 12 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString() + '원';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { font: { family: "'Noto Sans KR', sans-serif", size: 11 } },
+          grid: { display: false }
+        },
+        y: {
+          ticks: {
+            callback: v => v.toLocaleString() + '원',
+            font: { family: "'Noto Sans KR', sans-serif", size: 11 }
+          },
+          grid: { color: 'rgba(0,0,0,.04)' }
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETF·배당주·공모펀드 비교검색 | 머니네스트</title>
+  <meta name="description" content="국내 ETF, 배당주, 공모펀드를 한눈에 비교하세요. 수익률, 배당수익률, 총보수, PER 등 핵심 지표를 무료로 확인할 수 있습니다." />
+  <meta name="keywords" content="ETF 비교, 배당주 비교, 공모펀드 비교, KODEX, TIGER, ETF 수익률, 배당수익률, 주식 비교검색" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://moneynest.vercel.app/compare.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ETF·배당주·공모펀드 비교검색 | 머니네스트" />
+  <meta property="og:description" content="국내 ETF, 배당주, 공모펀드를 한눈에 비교하세요. 핵심 지표를 무료로 확인하세요." />
+  <meta property="og:url" content="https://moneynest.vercel.app/compare.html" />
+  <meta property="og:site_name" content="머니네스트" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .compare-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
+      color: white; padding: 52px 0 40px; position: relative; overflow: hidden;
+    }
+    .compare-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60L60 0' stroke='%23ffffff' stroke-width='.3' stroke-opacity='.08'/%3E%3C/svg%3E");
+    }
+    .compare-hero-inner { position: relative; }
+    .compare-hero h1 { color: white; margin-bottom: 10px; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+    .compare-hero p { color: #cbd5e1; max-width: 580px; margin-bottom: 0; font-size: .97rem; }
+    .compare-disclaimer {
+      display: inline-flex; align-items: flex-start; gap: 8px;
+      background: rgba(251,191,36,.15); border: 1px solid rgba(251,191,36,.4);
+      border-radius: 8px; padding: 9px 14px;
+      font-size: .8rem; color: #fde68a; margin-top: 18px; line-height: 1.5;
+    }
+    .tab-bar {
+      background: white; border-bottom: 2px solid var(--gray-2);
+      position: sticky; top: 64px; z-index: 90;
+    }
+    .tab-list { display: flex; }
+    .tab-btn {
+      padding: 15px 28px; font-size: .93rem; font-weight: 700;
+      color: var(--gray-5); border-bottom: 3px solid transparent;
+      transition: var(--transition); white-space: nowrap;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .tab-btn:hover { color: var(--blue-mid); background: var(--blue-pale); }
+    .tab-btn.active { color: var(--blue-mid); border-bottom-color: var(--blue-mid); }
+    .tab-badge {
+      background: var(--blue-pale); color: var(--blue-mid);
+      font-size: .72rem; font-weight: 700; border-radius: 10px; padding: 1px 7px;
+    }
+    .tab-btn.active .tab-badge { background: var(--blue-mid); color: white; }
+    .compare-controls { background: var(--gray-1); border-bottom: 1px solid var(--gray-2); padding: 14px 0; }
+    .controls-inner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 320px; }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--gray-4); font-size: .85rem; pointer-events: none; }
+    .search-input {
+      width: 100%; padding: 8px 12px 8px 34px;
+      border: 1px solid var(--gray-3); border-radius: var(--radius-sm);
+      font-family: var(--font); font-size: .88rem; background: white;
+      color: var(--dark); transition: var(--transition);
+    }
+    .search-input:focus { outline: none; border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .filter-select {
+      padding: 8px 12px; border: 1px solid var(--gray-3);
+      border-radius: var(--radius-sm); font-family: var(--font);
+      font-size: .88rem; background: white; color: var(--dark); cursor: pointer;
+    }
+    .filter-select:focus { outline: none; border-color: var(--blue-mid); }
+    .result-count { margin-left: auto; font-size: .83rem; color: var(--gray-5); white-space: nowrap; }
+    .compare-table-wrap {
+      overflow-x: auto; background: white;
+      border: 1px solid var(--gray-2); border-radius: var(--radius); margin: 20px 0;
+    }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: .87rem; min-width: 700px; }
+    .compare-table thead th {
+      background: var(--gray-1); padding: 11px 13px;
+      text-align: left; font-weight: 700; color: var(--gray-6);
+      border-bottom: 2px solid var(--gray-2); white-space: nowrap;
+    }
+    .compare-table thead th.sortable { cursor: pointer; }
+    .compare-table thead th.sortable:hover { background: var(--blue-pale); color: var(--blue-mid); }
+    .compare-table thead th.sort-asc::after { content: ' ↑'; color: var(--blue-mid); }
+    .compare-table thead th.sort-desc::after { content: ' ↓'; color: var(--blue-mid); }
+    .compare-table thead th.text-right, .compare-table td.text-right { text-align: right; }
+    .compare-table tbody tr { border-bottom: 1px solid var(--gray-2); transition: background .12s; }
+    .compare-table tbody tr:last-child { border-bottom: none; }
+    .compare-table tbody tr:hover { background: #f8faff; }
+    .compare-table tbody tr.selected { background: #eff6ff; }
+    .compare-table td { padding: 11px 13px; vertical-align: middle; }
+    .item-name { font-weight: 700; color: var(--dark); font-size: .9rem; line-height: 1.3; }
+    .item-code { font-size: .76rem; color: var(--gray-4); margin-top: 2px; }
+    .ret-pos { color: #dc2626; font-weight: 700; }
+    .ret-neg { color: #2563eb; font-weight: 700; }
+    .ret-zero { color: var(--gray-5); font-weight: 500; }
+    .cat-tag {
+      display: inline-block; padding: 2px 8px; border-radius: 12px;
+      font-size: .73rem; font-weight: 700; white-space: nowrap;
+    }
+    .cat-국내주식 { background: #dbeafe; color: #1d4ed8; }
+    .cat-해외주식 { background: #d1fae5; color: #065f46; }
+    .cat-섹터 { background: #fef3c7; color: #92400e; }
+    .cat-채권 { background: #ede9fe; color: #6d28d9; }
+    .cat-리츠 { background: #fce7f3; color: #9d174d; }
+    .cat-배당 { background: #fee2e2; color: #991b1b; }
+    .cat-금융 { background: #dbeafe; color: #1d4ed8; }
+    .cat-통신 { background: #d1fae5; color: #065f46; }
+    .cat-인프라 { background: #fef3c7; color: #92400e; }
+    .cat-소비재 { background: #ede9fe; color: #6d28d9; }
+    .cat-소재 { background: #fce7f3; color: #9d174d; }
+    .cat-산업재 { background: #f0fdf4; color: #166534; }
+    .cat-자동차 { background: #ecfdf5; color: #047857; }
+    .cat-보험 { background: #f5f3ff; color: #5b21b6; }
+    .cat-전자 { background: #fef9c3; color: #713f12; }
+    .cat-레저 { background: #fce7f3; color: #9d174d; }
+    .cat-지주 { background: #e0f2fe; color: #0369a1; }
+    .cat-IT·반도체 { background: #dbeafe; color: #1d4ed8; }
+    .cat-글로벌주식 { background: #d1fae5; color: #065f46; }
+    .cat-TDF { background: #f5f3ff; color: #5b21b6; }
+    .cat-국내주식형 { background: #dbeafe; color: #1d4ed8; }
+    .cat-리츠형 { background: #fce7f3; color: #9d174d; }
+    .pref-badge {
+      display:inline-block; background:#fff3cd; color:#856404;
+      font-size:.66rem; font-weight:700; padding:1px 5px;
+      border-radius:5px; vertical-align:middle; margin-left:4px;
+    }
+    .price-col { font-size:.85rem; color:#334155; font-weight:700; }
+    .buyback-yes { display: inline-flex; align-items: center; gap: 3px; background: #d1fae5; color: #065f46; font-size: .73rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+    .buyback-no { color: var(--gray-4); font-size: .82rem; }
+    .compare-checkbox { width: 17px; height: 17px; accent-color: var(--blue-mid); cursor: pointer; }
+    .comparison-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #0f172a; color: white; padding: 12px 0;
+      transform: translateY(100%); transition: transform .28s ease;
+      z-index: 200; box-shadow: 0 -4px 24px rgba(0,0,0,.35);
+      border-top: 1px solid rgba(255,255,255,.1);
+    }
+    .comparison-bar.show { transform: translateY(0); }
+    .comparison-bar-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .comp-label { font-size: .83rem; color: #64748b; white-space: nowrap; }
+    .comp-items { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .comp-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px; padding: 4px 12px; font-size: .84rem;
+    }
+    .comp-chip-remove { cursor: pointer; opacity: .6; line-height: 1; }
+    .comp-chip-remove:hover { opacity: 1; }
+    .btn-compare {
+      background: var(--blue-mid); color: white;
+      padding: 8px 22px; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .88rem; white-space: nowrap;
+    }
+    .btn-compare:hover { background: var(--blue); }
+    .btn-clear-comp { color: #64748b; font-size: .83rem; padding: 8px; white-space: nowrap; }
+    .btn-clear-comp:hover { color: white; }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      z-index: 300; display: flex; align-items: center;
+      justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 16px;
+      max-width: 920px; width: 100%; max-height: 88vh;
+      overflow-y: auto; transform: scale(.96); transition: transform .2s;
+    }
+    .modal-overlay.show .modal { transform: scale(1); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--gray-2);
+      position: sticky; top: 0; background: white; z-index: 1;
+    }
+    .modal-header h3 { font-size: 1.05rem; }
+    .modal-close { font-size: 1.5rem; color: var(--gray-4); cursor: pointer; line-height: 1; padding: 4px; }
+    .modal-close:hover { color: var(--dark); }
+    .modal-body { padding: 24px; overflow-x: auto; }
+    .comp-table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 480px; }
+    .comp-table th {
+      background: var(--blue-mid); color: white; padding: 11px 16px;
+      text-align: center; font-weight: 700;
+    }
+    .comp-table th:first-child { background: var(--gray-1); color: var(--gray-6); text-align: left; min-width: 120px; }
+    .comp-table td { padding: 11px 16px; text-align: center; border-bottom: 1px solid var(--gray-2); }
+    .comp-table td:first-child { text-align: left; font-weight: 700; color: var(--gray-7); background: var(--gray-1); }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .best-cell { color: #059669; font-weight: 700; background: #ecfdf5 !important; }
+    .info-strip {
+      background: var(--blue-pale); border-left: 4px solid var(--blue-mid);
+      padding: 12px 16px; border-radius: 0 8px 8px 0;
+      font-size: .85rem; color: var(--gray-7); margin-bottom: 4px;
+    }
+    @media (max-width: 768px) {
+      .tab-btn { padding: 13px 14px; font-size: .85rem; }
+      .search-wrap { max-width: 100%; flex: 1 1 100%; }
+      .result-count { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="머니네스트 홈">
+        <div class="logo-icon">M</div>
+        <span class="logo-text">머니<span>네스트</span></span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="index.html">홈</a>
+        <a href="compare.html" class="active">비교검색</a>
+        <a href="articles/etf-beginner-guide.html">ETF 투자</a>
+        <a href="articles/dividend-investing-guide.html">배당주</a>
+        <a href="articles/pension-savings-irp.html">연금·IRP</a>
+        <a href="about.html">소개</a>
+      </nav>
+      <button class="hamburger" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" aria-label="모바일 메뉴">
+    <a href="index.html">홈</a>
+    <a href="compare.html">비교검색</a>
+    <a href="articles/etf-beginner-guide.html">ETF 투자</a>
+    <a href="articles/dividend-investing-guide.html">배당주</a>
+    <a href="articles/pension-savings-irp.html">연금·IRP</a>
+    <a href="about.html">소개</a>
+    <a href="contact.html">문의하기</a>
+  </nav>
+</header>
+
+<section class="compare-hero">
+  <div class="container compare-hero-inner">
+    <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#93c5fd;display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:16px;">
+      <span>📊</span> 코스피 강세장 시대, 내게 맞는 투자상품 찾기
+    </div>
+    <h1>ETF · 배당주 · 공모펀드 비교검색</h1>
+    <p>수익률, 총보수, 배당수익률, PER 등 핵심 지표를 한눈에 비교하세요.<br />최대 3개 상품을 선택해 나란히 비교할 수 있습니다.</p>
+    <div class="compare-disclaimer">
+      ⚠️ 현재가는 장중 자동 업데이트됩니다. 정보는 참고용이며 실시간 정확한 데이터는 <strong style="color:#fde68a;">네이버 증권·KRX</strong>에서 확인하세요. 투자 손익의 책임은 투자자 본인에게 있습니다.
+    </div>
+    <div id="live-indicator" style="display:none;margin-top:10px;align-items:center;gap:6px;font-size:.8rem;color:#86efac;">
+      <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
+      현재가 실시간 업데이트됨
+    </div>
+    <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+  </div>
+</section>
+
+<div class="container">
+  <div class="ad-unit ad-unit-horizontal" style="margin-top:20px;">
+    <span>광고 영역</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="container">
+    <div class="tab-list" role="tablist">
+      <button class="tab-btn active" role="tab" data-tab="etf" aria-selected="true">
+        📈 ETF <span class="tab-badge" id="badge-etf">30</span>
+      </button>
+      <button class="tab-btn" role="tab" data-tab="stock" aria-selected="false">
+        💰 배당주 <span class="tab-badge" id="badge-stock">24</span>
+      </button>
+      <button class="tab-btn" role="tab" data-tab="fund" aria-selected="false">
+        🏦 공모펀드 <span class="tab-badge" id="badge-fund">8</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="compare-controls">
+  <div class="container">
+    <div class="controls-inner">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="이름 또는 코드 검색..." aria-label="검색" />
+      </div>
+      <select class="filter-select" id="cat-filter" aria-label="카테고리 필터">
+        <option value="">전체 카테고리</option>
+      </select>
+      <select class="filter-select" id="manager-filter" aria-label="운용사 필터">
+        <option value="">전체 운용사</option>
+      </select>
+      <span class="result-count" id="result-count">총 30개</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container" style="padding-top:4px;padding-bottom:100px;">
+    <div class="info-strip" id="tab-info" style="margin-top:20px;">
+      <strong>ETF 투자 포인트:</strong> 총보수는 낮을수록, 순자산은 클수록 유동성이 좋습니다. 배당 ETF는 배당수익률도 함께 확인하세요.
+    </div>
+    <div class="compare-table-wrap">
+      <table class="compare-table" id="compare-table" aria-label="비교 테이블">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <div class="ad-unit ad-unit-horizontal">
+      <span>광고 영역</span>
+    </div>
+  </div>
+</main>
+
+<div class="comparison-bar" id="comparison-bar" role="region" aria-label="비교 선택 항목">
+  <div class="container">
+    <div class="comparison-bar-inner">
+      <span class="comp-label">비교 선택</span>
+      <div class="comp-items" id="comp-items"></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn-compare" id="btn-do-compare">비교하기 →</button>
+        <button class="btn-clear-comp" id="btn-clear">모두 해제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">📊 상품 비교</h3>
+      <button class="modal-close" id="modal-close" aria-label="닫기">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">M</div>
+          <span class="footer-logo-text">머니네스트</span>
+        </div>
+        <p>스마트한 재테크, 올바른 정보로 시작하세요.<br />머니네스트는 투자, 절세, 부동산, 연금 등 실생활 금융 정보를 쉽게 전달합니다.</p>
+      </div>
+      <div class="footer-col">
+        <h4>재테크 가이드</h4>
+        <a href="articles/etf-beginner-guide.html">ETF 투자 가이드</a>
+        <a href="articles/dividend-investing-guide.html">배당주 복리투자</a>
+        <a href="articles/pension-savings-irp.html">연금저축·IRP</a>
+        <a href="articles/retirement-fund-irp.html">퇴직금·IRP</a>
+        <a href="articles/isa-account-guide.html">ISA 계좌</a>
+      </div>
+      <div class="footer-col">
+        <h4>사이트 정보</h4>
+        <a href="compare.html">비교검색</a>
+        <a href="about.html">머니네스트 소개</a>
+        <a href="contact.html">문의하기</a>
+      </div>
+      <div class="footer-col">
+        <h4>법적 고지</h4>
+        <a href="privacy.html">개인정보처리방침</a>
+        <a href="terms.html">이용약관</a>
+      </div>
+    </div>
+    <p class="footer-disclaimer">
+      ※ 머니네스트의 모든 콘텐츠는 정보 제공 목적으로만 작성되었으며, 투자 권유나 금융 조언이 아닙니다. 투자는 본인의 판단과 책임하에 이루어져야 하며, 투자 손실에 대한 책임은 투자자 본인에게 있습니다.
+    </p>
+    <div class="footer-bottom">
+      <span>© 2025 머니네스트. All rights reserved.</span>
+      <div>
+        <a href="privacy.html">개인정보처리방침</a>
+        <a href="terms.html">이용약관</a>
+        <a href="contact.html">문의</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+const DATA = {
+  etf: [
+    // 국내주식
+    { name:'KODEX 200',                       code:'069500', cat:'국내주식', manager:'삼성자산운용',      aum:6.2,  r1m:3.2,  r3m:8.5,  r1y:28.3, fee:0.15, div:1.8, price:119100 },
+    { name:'TIGER 200',                       code:'102110', cat:'국내주식', manager:'미래에셋자산운용',  aum:4.8,  r1m:3.1,  r3m:8.4,  r1y:28.1, fee:0.05, div:1.7, price:119170 },
+    { name:'TIGER 코리아TOP10',               code:'292150', cat:'국내주식', manager:'미래에셋자산운용',  aum:0.8,  r1m:3.0,  r3m:8.1,  r1y:27.8, fee:0.07, div:1.5, price:42345  },
+    { name:'KODEX 코스닥150',                 code:'229200', cat:'국내주식', manager:'삼성자산운용',      aum:1.2,  r1m:4.8,  r3m:12.3, r1y:34.5, fee:0.25, div:0.5, price:19535  },
+    { name:'TIGER 코스닥150',                 code:'232080', cat:'국내주식', manager:'미래에셋자산운용',  aum:0.9,  r1m:4.6,  r3m:12.0, r1y:33.8, fee:0.21, div:0.4, price:19955  },
+    { name:'KODEX Top10동일가중',             code:'395170', cat:'국내주식', manager:'삼성자산운용',      aum:0.3,  r1m:3.5,  r3m:9.0,  r1y:25.0, fee:0.15, div:1.2, price:19635  },
+    // 해외주식 - S&P500
+    { name:'TIGER 미국S&P500',                code:'360750', cat:'해외주식', manager:'미래에셋자산운용',  aum:8.3,  r1m:2.1,  r3m:6.8,  r1y:22.4, fee:0.07, div:1.2, price:27280  },
+    { name:'KODEX 미국S&P500',                code:'379800', cat:'해외주식', manager:'삼성자산운용',      aum:5.1,  r1m:2.0,  r3m:6.7,  r1y:22.1, fee:0.05, div:0.0, price:24860  },
+    { name:'ACE 미국S&P500',                  code:'360200', cat:'해외주식', manager:'한국투자신탁운용',  aum:2.8,  r1m:2.0,  r3m:6.6,  r1y:22.0, fee:0.07, div:1.1, price:27570  },
+    { name:'SOL 미국S&P500',                  code:'433330', cat:'해외주식', manager:'신한자산운용',      aum:1.4,  r1m:1.9,  r3m:6.5,  r1y:21.8, fee:0.05, div:1.0, price:22795  },
+    // 해외주식 - 나스닥
+    { name:'TIGER 미국나스닥100',             code:'133690', cat:'해외주식', manager:'미래에셋자산운용',  aum:3.9,  r1m:3.4,  r3m:9.2,  r1y:28.6, fee:0.07, div:0.8, price:192205 },
+    { name:'KODEX 미국나스닥100',             code:'379810', cat:'해외주식', manager:'삼성자산운용',      aum:2.2,  r1m:3.3,  r3m:9.0,  r1y:28.2, fee:0.05, div:0.0, price:28765  },
+    { name:'ACE 미국나스닥100',               code:'367380', cat:'해외주식', manager:'한국투자신탁운용',  aum:1.5,  r1m:3.2,  r3m:8.9,  r1y:27.8, fee:0.07, div:0.7, price:33040  },
+    { name:'TIGER 미국필라델피아반도체나스닥',code:'381180', cat:'해외주식', manager:'미래에셋자산운용',  aum:1.8,  r1m:4.2,  r3m:11.5, r1y:32.1, fee:0.49, div:0.5, price:46260  },
+    // 섹터
+    { name:'KODEX 반도체',                    code:'091160', cat:'섹터',    manager:'삼성자산운용',      aum:1.8,  r1m:6.2,  r3m:15.8, r1y:52.1, fee:0.45, div:0.6, price:147995 },
+    { name:'KODEX AI반도체',                  code:'395160', cat:'섹터',    manager:'삼성자산운용',      aum:0.6,  r1m:5.8,  r3m:14.2, r1y:40.5, fee:0.45, div:0.4, price:38640  },
+    { name:'TIGER 2차전지테마',               code:'305540', cat:'섹터',    manager:'미래에셋자산운용',  aum:0.9,  r1m:8.1,  r3m:18.4, r1y:15.3, fee:0.40, div:0.3, price:25675  },
+    { name:'TIGER 차이나전기차SOLACTIVE',     code:'371460', cat:'섹터',    manager:'미래에셋자산운용',  aum:0.4,  r1m:-2.1, r3m:-5.8, r1y:-18.4,fee:0.59, div:0.0, price:14415  },
+    { name:'TIGER 글로벌AI액티브',            code:'466950', cat:'섹터',    manager:'미래에셋자산운용',  aum:0.5,  r1m:4.5,  r3m:11.8, r1y:36.4, fee:0.49, div:0.2, price:37140  },
+    { name:'SOL 조선TOP3플러스',              code:'466920', cat:'섹터',    manager:'신한자산운용',      aum:0.3,  r1m:12.5, r3m:28.0, r1y:85.0, fee:0.45, div:0.3, price:40610  },
+    // 배당
+    { name:'TIGER 코스피고배당',              code:'210780', cat:'배당',    manager:'미래에셋자산운용',  aum:0.8,  r1m:2.5,  r3m:6.9,  r1y:14.8, fee:0.29, div:5.1, price:25535  },
+    { name:'RISE 대형고배당10TR',             code:'315960', cat:'배당',    manager:'KB자산운용',        aum:0.3,  r1m:1.8,  r3m:4.5,  r1y:10.2, fee:0.28, div:5.2, price:86655  },
+    { name:'TIGER 미국배당다우존스',          code:'458730', cat:'배당',    manager:'미래에셋자산운용',  aum:2.1,  r1m:1.5,  r3m:4.2,  r1y:12.8, fee:0.07, div:3.5, price:14905  },
+    { name:'TIGER 은행고배당플러스TOP10',     code:'466940', cat:'배당',    manager:'미래에셋자산운용',  aum:0.4,  r1m:2.8,  r3m:7.2,  r1y:22.0, fee:0.29, div:4.8, price:25520  },
+    // 리츠
+    { name:'TIGER 미국MSCI리츠(합성 H)',      code:'182480', cat:'리츠',    manager:'미래에셋자산운용',  aum:0.4,  r1m:1.5,  r3m:4.2,  r1y:9.8,  fee:0.25, div:4.2, price:13660  },
+    { name:'TIGER 리츠부동산인프라',          code:'329200', cat:'리츠',    manager:'미래에셋자산운용',  aum:0.3,  r1m:1.2,  r3m:3.8,  r1y:8.2,  fee:0.29, div:5.8, price:4325   },
+    // 채권/현금성
+    { name:'KODEX 단기채권PLUS',              code:'214980', cat:'채권',    manager:'삼성자산운용',      aum:2.4,  r1m:0.3,  r3m:0.9,  r1y:3.5,  fee:0.05, div:3.4, price:114855 },
+    { name:'TIGER KOFR금리액티브(합성)',      code:'449170', cat:'채권',    manager:'미래에셋자산운용',  aum:3.8,  r1m:0.3,  r3m:0.9,  r1y:3.6,  fee:0.01, div:3.5, price:110855 },
+    { name:'TIGER 미국채10년선물',            code:'305080', cat:'채권',    manager:'미래에셋자산운용',  aum:1.1,  r1m:-0.3, r3m:1.2,  r1y:3.8,  fee:0.29, div:3.5, price:13385  },
+    { name:'KODEX 미국30년국채울트라선물(H)', code:'304660', cat:'채권',    manager:'삼성자산운용',      aum:0.4,  r1m:-0.8, r3m:2.1,  r1y:2.8,  fee:0.30, div:4.8, price:7450   },
+  ],
+  stock: [
+    // ── 보통주 ──────────────────────────────────────────────────────────────
+    { name:'KB금융',        code:'105560', cat:'금융',      per:8.3,  pbr:0.76, div:2.8, divGrow:12, mcap:57.3, buyback:true,  price:153600, preferred:false },
+    { name:'신한지주',      code:'055550', cat:'금융',      per:7.6,  pbr:0.63, div:2.7, divGrow:10, mcap:45.0, buyback:true,  price:96700,  preferred:false },
+    { name:'하나금융지주',  code:'086790', cat:'금융',      per:6.7,  pbr:0.57, div:3.3, divGrow:15, mcap:21.0, buyback:true,  price:123100, preferred:false },
+    { name:'기업은행',      code:'024110', cat:'금융',      per:6.2,  pbr:0.46, div:4.9, divGrow:8,  mcap:13.0, buyback:false, price:21350,  preferred:false },
+    { name:'우리금융지주',  code:'316140', cat:'금융',      per:6.6,  pbr:0.57, div:4.3, divGrow:18, mcap:15.0, buyback:true,  price:31800,  preferred:false },
+    { name:'삼성전자',      code:'005930', cat:'IT·반도체', per:18.3, pbr:1.87, div:0.6, divGrow:5,  mcap:1657, buyback:true,  price:279000, preferred:false },
+    { name:'SK텔레콤',      code:'017670', cat:'통신',      per:28.1, pbr:0.89, div:1.6, divGrow:4,  mcap:22.0, buyback:true,  price:103400, preferred:false },
+    { name:'KT',            code:'030200', cat:'통신',      per:7.7,  pbr:0.72, div:4.0, divGrow:8,  mcap:15.0, buyback:false, price:59900,  preferred:false },
+    { name:'KT&G',          code:'033780', cat:'소비재',    per:15.8, pbr:1.59, div:3.3, divGrow:6,  mcap:13.0, buyback:true,  price:182100, preferred:false },
+    { name:'삼성화재',      code:'000810', cat:'보험',      per:12.2, pbr:0.99, div:3.9, divGrow:20, mcap:36.0, buyback:true,  price:505000, preferred:false },
+    { name:'DB손해보험',    code:'005830', cat:'보험',      per:5.2,  pbr:0.73, div:4.7, divGrow:18, mcap:9.0,  buyback:true,  price:161500, preferred:false },
+    { name:'맥쿼리인프라',  code:'088980', cat:'인프라',    per:18.5, pbr:1.10, div:7.4, divGrow:5,  mcap:4.5,  buyback:false, price:11220,  preferred:false },
+    { name:'HD현대',        code:'267250', cat:'산업재',    per:15.5, pbr:1.32, div:1.4, divGrow:25, mcap:22.0, buyback:true,  price:287000, preferred:false },
+    { name:'POSCO홀딩스',   code:'005490', cat:'소재',      per:37.7, pbr:0.41, div:2.1, divGrow:15, mcap:41.0, buyback:true,  price:479000, preferred:false },
+    { name:'현대차',        code:'005380', cat:'자동차',    per:8.4,  pbr:0.67, div:1.5, divGrow:30, mcap:130,  buyback:true,  price:646000, preferred:false },
+    { name:'LG전자',        code:'066570', cat:'전자',      per:17.3, pbr:0.69, div:0.7, divGrow:8,  mcap:19.0, buyback:false, price:184900, preferred:false },
+    { name:'강원랜드',      code:'035250', cat:'레저',      per:12.7, pbr:0.96, div:6.0, divGrow:5,  mcap:4.5,  buyback:false, price:15880,  preferred:false },
+    { name:'GS',            code:'078930', cat:'지주',      per:6.7,  pbr:0.36, div:3.9, divGrow:10, mcap:7.2,  buyback:true,  price:76200,  preferred:false },
+    // ── 우선주 ──────────────────────────────────────────────────────────────
+    { name:'삼성전자우',    code:'005935', cat:'IT·반도체', per:18.3, pbr:1.25, div:0.9, divGrow:5,  mcap:112,  buyback:false, price:187000, preferred:true  },
+    { name:'현대차우',      code:'005385', cat:'자동차',    per:8.4,  pbr:0.44, div:3.8, divGrow:30, mcap:7.0,  buyback:false, price:267000, preferred:true  },
+    { name:'현대차2우B',    code:'005387', cat:'자동차',    per:8.4,  pbr:0.44, div:3.8, divGrow:30, mcap:7.2,  buyback:false, price:266500, preferred:true  },
+    { name:'삼성화재우',    code:'000815', cat:'보험',      per:12.2, pbr:0.72, div:5.1, divGrow:20, mcap:2.8,  buyback:false, price:379000, preferred:true  },
+    { name:'LG전자우',      code:'066575', cat:'전자',      per:17.3, pbr:0.29, div:1.9, divGrow:8,  mcap:1.8,  buyback:false, price:73600,  preferred:true  },
+    { name:'아모레퍼시픽우',code:'090435', cat:'소비재',    per:35.0, pbr:0.95, div:2.7, divGrow:3,  mcap:0.8,  buyback:false, price:45300,  preferred:true  },
+  ],
+  fund: [
+    { name:'미래에셋 글로벌혁신기업', cat:'글로벌주식', manager:'미래에셋자산운용',    r1y:22.1, r3y:48.2, fee:1.85, aum:8200  },
+    { name:'삼성 글로벌ETF포커스',    cat:'글로벌주식', manager:'삼성자산운용',        r1y:18.4, r3y:35.6, fee:1.42, aum:5600  },
+    { name:'KB 글로벌주식솔루션',     cat:'글로벌주식', manager:'KB자산운용',          r1y:19.8, r3y:38.4, fee:1.65, aum:3200  },
+    { name:'한국투자 TDF2050',        cat:'TDF',        manager:'한국투자신탁',        r1y:14.2, r3y:28.4, fee:0.62, aum:4800  },
+    { name:'키움 히어로즈',           cat:'국내주식형', manager:'키움투자자산운용',    r1y:28.6, r3y:52.8, fee:1.15, aum:1800  },
+    { name:'신한 코리아밸류',         cat:'국내주식형', manager:'신한자산운용',        r1y:24.3, r3y:42.1, fee:0.98, aum:2400  },
+    { name:'NH-아문디 글로벌리츠',    cat:'리츠형',     manager:'NH-아문디자산운용',   r1y:8.2,  r3y:18.5, fee:1.35, aum:1200  },
+    { name:'미래에셋 TDF2045',        cat:'TDF',        manager:'미래에셋자산운용',    r1y:15.8, r3y:30.2, fee:0.58, aum:6200  },
+  ]
+};
+
+// 연간 EPS(원), 연간 배당금(원) — PER·배당수익률 실시간 재계산용 (2025 회계연도 기준)
+const STOCK_FUNDAMENTALS = {
+  '105560': { eps: 18618, annualDiv: 4367 },  // KB금융
+  '055550': { eps: 12690, annualDiv: 2590 },  // 신한지주
+  '086790': { eps: 18455, annualDiv: 4105 },  // 하나금융지주
+  '024110': { eps: 3466,  annualDiv: 1048 },  // 기업은행
+  '316140': { eps: 4797,  annualDiv: 1360 },  // 우리금융지주
+  '005930': { eps: 15271, annualDiv: 1668 },  // 삼성전자
+  '017670': { eps: 3674,  annualDiv: 1660 },  // SK텔레콤
+  '030200': { eps: 7820,  annualDiv: 2400 },  // KT
+  '033780': { eps: 11496, annualDiv: 6000 },  // KT&G
+  '000810': { eps: 41360, annualDiv: 19500 }, // 삼성화재
+  '005830': { eps: 31119, annualDiv: 7600 },  // DB손해보험
+  '088980': { eps: 607,   annualDiv: 830  },  // 맥쿼리인프라
+  '267250': { eps: 18553, annualDiv: 4000 },  // HD현대
+  '005490': { eps: 12696, annualDiv: 10000 }, // POSCO홀딩스
+  '005380': { eps: 76996, annualDiv: 10000 }, // 현대차
+  '066570': { eps: 10706, annualDiv: 1350 },  // LG전자
+  '035250': { eps: 1247,  annualDiv: 950  },  // 강원랜드
+  '078930': { eps: 11407, annualDiv: 3000 },  // GS
+  // 우선주
+  '005935': { eps: 15271, annualDiv: 1669 },  // 삼성전자우
+  '005385': { eps: 76996, annualDiv: 10050 }, // 현대차우
+  '005387': { eps: 76996, annualDiv: 10100 }, // 현대차2우B
+  '000815': { eps: 41360, annualDiv: 19505 }, // 삼성화재우
+  '066575': { eps: 10706, annualDiv: 1400 },  // LG전자우
+  '090435': { eps: 1294,  annualDiv: 1245 },  // 아모레퍼시픽우
+};
+
+let liveDataLoaded = false;
+
+function applyPrices(priceMap) {
+  let updated = 0;
+  Object.entries(priceMap).forEach(([code, price]) => {
+    if (!price) return;
+    const ei = DATA.etf.findIndex(e => e.code === code);
+    if (ei >= 0) { DATA.etf[ei].price = price; updated++; return; }
+    const si = DATA.stock.findIndex(s => s.code === code);
+    if (si >= 0) {
+      DATA.stock[si].price = price;
+      const f = STOCK_FUNDAMENTALS[code];
+      if (f) {
+        DATA.stock[si].per = parseFloat((price / f.eps).toFixed(1));
+        DATA.stock[si].div = parseFloat((f.annualDiv / price * 100).toFixed(1));
+      }
+      updated++;
+    }
+  });
+  if (updated > 0) {
+    liveDataLoaded = true;
+    const indicator = document.getElementById('live-indicator');
+    if (indicator) indicator.style.display = 'inline-flex';
+    if (state.tab === 'stock' || state.tab === 'etf') renderTable();
+  }
+}
+
+async function fetchLivePrices() {
+  const allCodes = [
+    ...DATA.stock.map(s => s.code),
+    ...DATA.etf.map(e => e.code),
+  ].join(',');
+
+  try {
+    const res = await fetch(`/api/prices?codes=${allCodes}`, {
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return;
+    const priceMap = await res.json();
+    if (Object.keys(priceMap).length > 0) applyPrices(priceMap);
+  } catch (_) {
+    // 네트워크 오류 또는 로컬 개발 환경 → 정적 데이터 유지
+  }
+}
+
+const TAB_INFO = {
+  etf:   '<strong>ETF 투자 포인트:</strong> 총보수는 낮을수록, 순자산은 클수록 유동성이 좋습니다. 배당 ETF는 배당수익률도 함께 확인하세요.',
+  stock: '<strong>배당주 투자 포인트:</strong> PER 15 이하 + 배당수익률 4% 이상 + 배당성장 이력을 모두 갖춘 종목이 이상적입니다. 자사주 소각은 주주환원의 또 다른 방식입니다.',
+  fund:  '<strong>공모펀드 투자 포인트:</strong> 총보수(TER)가 높을수록 수익률을 갉아먹습니다. 장기투자라면 ETF 대비 비용을 꼭 비교하세요.'
+};
+
+const HEADS = {
+  etf: [
+    { label:'', key:null },
+    { label:'ETF명 / 코드', key:'name' },
+    { label:'카테고리', key:'cat' },
+    { label:'운용사', key:'manager' },
+    { label:'현재가', key:'price', right:true },
+    { label:'순자산(조)', key:'aum', right:true },
+    { label:'1개월', key:'r1m', right:true },
+    { label:'3개월', key:'r3m', right:true },
+    { label:'1년', key:'r1y', right:true },
+    { label:'총보수(%)', key:'fee', right:true },
+    { label:'배당수익률', key:'div', right:true },
+  ],
+  stock: [
+    { label:'', key:null },
+    { label:'종목명 / 코드', key:'name' },
+    { label:'섹터', key:'cat' },
+    { label:'현재가', key:'price', right:true },
+    { label:'PER', key:'per', right:true },
+    { label:'PBR', key:'pbr', right:true },
+    { label:'배당수익률', key:'div', right:true },
+    { label:'5년배당성장', key:'divGrow', right:true },
+    { label:'시총(조)', key:'mcap', right:true },
+    { label:'자사주소각', key:'buyback' },
+  ],
+  fund: [
+    { label:'', key:null },
+    { label:'펀드명', key:'name' },
+    { label:'유형', key:'cat' },
+    { label:'운용사', key:'manager' },
+    { label:'1년수익률', key:'r1y', right:true },
+    { label:'3년수익률', key:'r3y', right:true },
+    { label:'총보수(%)', key:'fee', right:true },
+    { label:'설정액(억)', key:'aum', right:true },
+  ]
+};
+
+let state = {
+  tab: 'etf', search: '', cat: '', manager: '',
+  sortKey: null, sortDir: 'desc', selected: []
+};
+
+function retClass(v) { return v > 0 ? 'ret-pos' : v < 0 ? 'ret-neg' : 'ret-zero'; }
+function retFmt(v) { return (v > 0 ? '+' : '') + v.toFixed(1) + '%'; }
+function priceFmt(p) { return p ? p.toLocaleString('ko-KR') + '원' : '-'; }
+function catKey(cat) {
+  if (cat.includes('섹터')) return '섹터';
+  return cat.replace(/·/g, '-');
+}
+
+function updateFilters() {
+  const data = DATA[state.tab];
+  const cats = [...new Set(data.map(d => d.cat))].sort();
+  const catSel = document.getElementById('cat-filter');
+  catSel.innerHTML = '<option value="">전체 카테고리</option>';
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    if (c === state.cat) o.selected = true;
+    catSel.appendChild(o);
+  });
+  const manSel = document.getElementById('manager-filter');
+  if (state.tab !== 'stock') {
+    const managers = [...new Set(data.map(d => d.manager))].sort();
+    manSel.innerHTML = '<option value="">전체 운용사</option>';
+    managers.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m; o.textContent = m;
+      if (m === state.manager) o.selected = true;
+      manSel.appendChild(o);
+    });
+    manSel.style.display = '';
+  } else {
+    manSel.style.display = 'none';
+  }
+}
+
+function getFiltered() {
+  let data = DATA[state.tab].map((d, i) => ({ ...d, _idx: i }));
+  const q = state.search.trim().toLowerCase();
+  if (q) data = data.filter(d => d.name.toLowerCase().includes(q) || (d.code && d.code.includes(q)));
+  if (state.cat) data = data.filter(d => d.cat === state.cat);
+  if (state.manager && state.tab !== 'stock') data = data.filter(d => d.manager === state.manager);
+  if (state.sortKey) {
+    data.sort((a, b) => {
+      const av = a[state.sortKey], bv = b[state.sortKey];
+      if (typeof av === 'boolean') return state.sortDir === 'asc' ? (av ? 1 : -1) - (bv ? 1 : -1) : (bv ? 1 : -1) - (av ? 1 : -1);
+      if (typeof av === 'string') return state.sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+      return state.sortDir === 'asc' ? av - bv : bv - av;
+    });
+  }
+  return data;
+}
+
+function renderTable() {
+  const heads = HEADS[state.tab];
+  const filtered = getFiltered();
+
+  const thead = document.getElementById('table-head');
+  thead.innerHTML = '<tr>' + heads.map(h => {
+    let cls = [];
+    if (h.right) cls.push('text-right');
+    if (h.key) cls.push('sortable');
+    if (h.key && h.key === state.sortKey) cls.push('sort-' + state.sortDir);
+    return `<th class="${cls.join(' ')}" data-key="${h.key || ''}">${h.label}</th>`;
+  }).join('') + '</tr>';
+
+  thead.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.key;
+      if (state.sortKey === k) state.sortDir = state.sortDir === 'desc' ? 'asc' : 'desc';
+      else { state.sortKey = k; state.sortDir = 'desc'; }
+      renderTable();
+    });
+  });
+
+  const tbody = document.getElementById('table-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="${heads.length}" style="text-align:center;padding:64px 20px;color:var(--gray-5);">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div><div>검색 결과가 없습니다.</div>
+    </td></tr>`;
+    document.getElementById('result-count').textContent = '0개';
+    document.getElementById('badge-' + state.tab).textContent = '0';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(d => {
+    const selId = state.tab + '_' + d._idx;
+    const isSel = state.selected.some(s => s.id === selId);
+    let cells = `<td><input type="checkbox" class="compare-checkbox" data-id="${selId}" data-name="${d.name}" ${isSel ? 'checked' : ''} aria-label="${d.name} 비교 선택" /></td>`;
+
+    if (state.tab === 'etf') {
+      cells += `<td><div class="item-name">${d.name}</div><div class="item-code">${d.code}</div></td>`;
+      cells += `<td><span class="cat-tag cat-${catKey(d.cat)}">${d.cat}</span></td>`;
+      cells += `<td style="font-size:.83rem;color:var(--gray-6);">${d.manager}</td>`;
+      cells += `<td class="text-right price-col">${priceFmt(d.price)}</td>`;
+      cells += `<td class="text-right" style="font-weight:600;">${d.aum.toFixed(1)}</td>`;
+      cells += `<td class="text-right"><span class="${retClass(d.r1m)}">${retFmt(d.r1m)}</span></td>`;
+      cells += `<td class="text-right"><span class="${retClass(d.r3m)}">${retFmt(d.r3m)}</span></td>`;
+      cells += `<td class="text-right"><span class="${retClass(d.r1y)}">${retFmt(d.r1y)}</span></td>`;
+      cells += `<td class="text-right">${d.fee.toFixed(2)}</td>`;
+      cells += `<td class="text-right">${d.div > 0 ? '<span style="color:#059669;font-weight:700;">' + d.div.toFixed(1) + '%</span>' : '<span style="color:var(--gray-4);">-</span>'}</td>`;
+    } else if (state.tab === 'stock') {
+      const prefBadge = d.preferred ? ' <span class="pref-badge">우선주</span>' : '';
+      cells += `<td><div class="item-name">${d.name}${prefBadge}</div><div class="item-code">${d.code}</div></td>`;
+      cells += `<td><span class="cat-tag cat-${d.cat.replace('·','-')}">${d.cat}</span></td>`;
+      cells += `<td class="text-right price-col">${priceFmt(d.price)}</td>`;
+      const perColor = d.per <= 8 ? '#059669' : d.per <= 15 ? '#d97706' : '#dc2626';
+      cells += `<td class="text-right" style="font-weight:700;color:${perColor};">${d.per.toFixed(1)}</td>`;
+      cells += `<td class="text-right">${d.pbr.toFixed(2)}</td>`;
+      const divColor = d.div >= 6 ? '#dc2626' : d.div >= 4 ? '#d97706' : 'var(--gray-7)';
+      cells += `<td class="text-right" style="font-weight:700;color:${divColor};">${d.div.toFixed(1)}%</td>`;
+      cells += `<td class="text-right"><span class="ret-pos">+${d.divGrow}%</span></td>`;
+      cells += `<td class="text-right" style="font-weight:600;">${d.mcap >= 10 ? d.mcap.toFixed(0) : d.mcap.toFixed(1)}</td>`;
+      cells += `<td>${d.buyback ? '<span class="buyback-yes">✓ 있음</span>' : '<span class="buyback-no">-</span>'}</td>`;
+    } else {
+      cells += `<td><div class="item-name">${d.name}</div></td>`;
+      cells += `<td><span class="cat-tag cat-${d.cat}">${d.cat}</span></td>`;
+      cells += `<td style="font-size:.83rem;color:var(--gray-6);">${d.manager}</td>`;
+      cells += `<td class="text-right"><span class="${retClass(d.r1y)}">${retFmt(d.r1y)}</span></td>`;
+      cells += `<td class="text-right"><span class="${retClass(d.r3y)}">${retFmt(d.r3y)}</span></td>`;
+      const feeColor = d.fee <= 0.7 ? '#059669' : d.fee <= 1.2 ? '#d97706' : '#dc2626';
+      cells += `<td class="text-right" style="font-weight:700;color:${feeColor};">${d.fee.toFixed(2)}</td>`;
+      cells += `<td class="text-right" style="font-weight:600;">${d.aum.toLocaleString()}</td>`;
+    }
+
+    return `<tr class="${isSel ? 'selected' : ''}">${cells}</tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.compare-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const id = cb.dataset.id, name = cb.dataset.name;
+      if (cb.checked) {
+        if (state.selected.length >= 3) {
+          cb.checked = false;
+          alert('최대 3개까지 선택할 수 있습니다.');
+          return;
+        }
+        state.selected.push({ id, name, tab: state.tab });
+        cb.closest('tr').classList.add('selected');
+      } else {
+        state.selected = state.selected.filter(s => s.id !== id);
+        cb.closest('tr').classList.remove('selected');
+      }
+      renderCompBar();
+    });
+  });
+
+  document.getElementById('result-count').textContent = '총 ' + filtered.length + '개';
+  document.getElementById('badge-' + state.tab).textContent = filtered.length;
+}
+
+function renderCompBar() {
+  const bar = document.getElementById('comparison-bar');
+  if (state.selected.length === 0) { bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  document.getElementById('comp-items').innerHTML = state.selected.map(s =>
+    `<span class="comp-chip">${s.name} <span class="comp-chip-remove" data-id="${s.id}" role="button" aria-label="${s.name} 해제">✕</span></span>`
+  ).join('');
+  document.querySelectorAll('.comp-chip-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      state.selected = state.selected.filter(s => s.id !== id);
+      const cb = document.querySelector(`.compare-checkbox[data-id="${id}"]`);
+      if (cb) { cb.checked = false; cb.closest('tr').classList.remove('selected'); }
+      renderCompBar();
+    });
+  });
+}
+
+function openModal() {
+  if (state.selected.length < 2) { alert('2개 이상 선택해주세요.'); return; }
+  const items = state.selected.map(s => {
+    const [tab, idx] = s.id.split('_');
+    return { ...DATA[tab][parseInt(idx)], tab };
+  });
+  const tab = items[0].tab;
+  let html = '';
+
+  if (tab === 'etf') {
+    html = buildComp(items,
+      ['카테고리','운용사','현재가','순자산(조)','수익률 1개월','수익률 3개월','수익률 1년','총보수(%)','배당수익률'],
+      ['cat','manager','price','aum','r1m','r3m','r1y','fee','div'],
+      { high:['aum','r1m','r3m','r1y','div'], low:['fee'] },
+      { price:v=>priceFmt(v), r1m:v=>retFmt(v), r3m:v=>retFmt(v), r1y:v=>retFmt(v), fee:v=>v.toFixed(2)+'%', aum:v=>v.toFixed(1)+'조', div:v=>v>0?v.toFixed(1)+'%':'-' }
+    );
+  } else if (tab === 'stock') {
+    html = buildComp(items,
+      ['섹터','현재가','PER','PBR','배당수익률','5년배당성장','시총(조)','자사주소각'],
+      ['cat','price','per','pbr','div','divGrow','mcap','buyback'],
+      { high:['div','divGrow','mcap'], low:['per','pbr'] },
+      { price:v=>priceFmt(v), per:v=>v.toFixed(2), pbr:v=>v.toFixed(2), div:v=>v.toFixed(1)+'%', divGrow:v=>'+'+v+'%', mcap:v=>(v>=10?v.toFixed(0):v.toFixed(1))+'조', buyback:v=>v?'✓ 있음':'-' }
+    );
+  } else {
+    html = buildComp(items,
+      ['유형','운용사','1년수익률','3년수익률','총보수(%)','설정액(억)'],
+      ['cat','manager','r1y','r3y','fee','aum'],
+      { high:['r1y','r3y','aum'], low:['fee'] },
+      { r1y:v=>retFmt(v), r3y:v=>retFmt(v), fee:v=>v.toFixed(2)+'%', aum:v=>v.toLocaleString()+'억' }
+    );
+  }
+
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function buildComp(items, cols, keys, best, fmts) {
+  let h = '<table class="comp-table"><thead><tr><th>항목</th>' +
+    items.map(d => `<th>${d.name}</th>`).join('') + '</tr></thead><tbody>';
+  cols.forEach((col, i) => {
+    const k = keys[i];
+    const vals = items.map(d => typeof d[k] === 'boolean' ? null : parseFloat(d[k]));
+    const numVals = vals.filter(v => v !== null);
+    const highVal = numVals.length ? Math.max(...numVals) : null;
+    const lowVal  = numVals.length ? Math.min(...numVals) : null;
+    h += `<tr><td>${col}</td>` + items.map(d => {
+      const v = d[k];
+      const num = typeof v === 'boolean' ? null : parseFloat(v);
+      const isBest = num !== null && ((best.high || []).includes(k) && num === highVal ||
+                                      (best.low  || []).includes(k) && num === lowVal);
+      const display = fmts[k] ? fmts[k](v) : v;
+      return `<td${isBest?' class="best-cell"':''}>${display}${isBest?' ★':''}</td>`;
+    }).join('') + '</tr>';
+  });
+  h += '</tbody></table><p style="font-size:.76rem;color:var(--gray-4);margin-top:10px;">★ 해당 항목 최우수 | 현재가 실시간 업데이트, 재무지표는 2025년 회계연도 기준입니다.</p>';
+  return h;
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    state.tab = btn.dataset.tab;
+    state.search = ''; state.cat = ''; state.manager = ''; state.sortKey = null;
+    document.getElementById('search-input').value = '';
+    document.getElementById('tab-info').innerHTML = TAB_INFO[state.tab];
+    updateFilters(); renderTable();
+  });
+});
+
+document.getElementById('search-input').addEventListener('input', e => { state.search = e.target.value; renderTable(); });
+document.getElementById('cat-filter').addEventListener('change', e => { state.cat = e.target.value; renderTable(); });
+document.getElementById('manager-filter').addEventListener('change', e => { state.manager = e.target.value; renderTable(); });
+document.getElementById('btn-do-compare').addEventListener('click', openModal);
+document.getElementById('btn-clear').addEventListener('click', () => {
+  state.selected = [];
+  document.querySelectorAll('.compare-checkbox').forEach(cb => cb.checked = false);
+  document.querySelectorAll('tr.selected').forEach(tr => tr.classList.remove('selected'));
+  renderCompBar();
+});
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.remove('show');
+});
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('show');
+});
+
+updateFilters();
+renderTable();
+fetchLivePrices();
+</script>
+</body>
+</html>
