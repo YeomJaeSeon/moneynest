@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://moneynest.vercel.app/sitemap.xml
+Sitemap: https://moneynest-omega.vercel.app/sitemap.xml

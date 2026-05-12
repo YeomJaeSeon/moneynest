@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(vercel env *)",
+      "Bash(vercel inspect *)",
+      "Bash(curl -o /dev/null -s -w \"HTTP %{http_code}\" \"https://moneynest-omega.vercel.app/\")",
+      "Bash(vercel --prod)"
+    ]
+  }
+}
