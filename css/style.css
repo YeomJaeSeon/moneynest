@@ -512,3 +512,28 @@ strong { font-weight: 700; color: var(--dark); }
 .font-bold { font-weight: 700; }
 .divider { height: 1px; background: var(--gray-2); margin: 32px 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* ─── Author Box ──────────────────────────── */
+.author-box {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--gray-1); border-radius: var(--radius);
+  padding: 20px 24px; margin-top: 40px; margin-bottom: 8px;
+  border-left: 4px solid var(--blue-mid);
+}
+.author-avatar {
+  width: 48px; height: 48px; min-width: 48px;
+  background: var(--blue-mid); color: #fff;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem;
+}
+.author-name { font-weight: 700; font-size: 1rem; color: var(--dark); margin-bottom: 4px; }
+.author-desc { font-size: .88rem; color: var(--gray-6); line-height: 1.6; }
+.author-updated { font-size: .82rem; color: var(--gray-4); margin-top: 4px; }
+
+/* ─── FAQ ─────────────────────────────────── */
+.faq-list { margin: 16px 0 24px; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { background: var(--white); border: 1px solid var(--gray-2); border-radius: var(--radius-sm); padding: 16px 20px; }
+.faq-q { font-weight: 700; color: var(--dark); margin-bottom: 8px; display: flex; gap: 8px; }
+.faq-q::before { content: "Q."; color: var(--blue-mid); flex-shrink: 0; }
+.faq-a { font-size: .95rem; color: var(--gray-7); line-height: 1.75; }
+.faq-a::before { content: "A. "; font-weight: 700; color: var(--green); }
