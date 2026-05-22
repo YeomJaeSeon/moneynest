@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const { codes } = req.query;
   if (!codes) return res.status(400).json({ error: 'codes param required' });
 
-  const codeList = codes.split(',').filter(c => /^\d+$/.test(c)).slice(0, 60);
+  const codeList = codes.split(',').filter(c => /^\d+$/.test(c)).slice(0, 100);
   if (!codeList.length) return res.status(400).json({ error: 'no valid codes' });
 
   const url = `https://polling.finance.naver.com/api/realtime/domestic/stock/${codeList.join(',')}`;

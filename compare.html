@@ -111,6 +111,11 @@
     .cat-산업재 { background: #f0fdf4; color: #166534; }
     .cat-자동차 { background: #ecfdf5; color: #047857; }
     .cat-보험 { background: #f5f3ff; color: #5b21b6; }
+    .cat-에너지 { background: #fff7ed; color: #c2410c; }
+    .cat-증권 { background: #eff6ff; color: #1d4ed8; }
+    .cat-원자재 { background: #fefce8; color: #a16207; }
+    .cat-레버리지 { background: #fee2e2; color: #b91c1c; }
+    .cat-인버스 { background: #f5f3ff; color: #7c3aed; }
     .cat-전자 { background: #fef9c3; color: #713f12; }
     .cat-레저 { background: #fce7f3; color: #9d174d; }
     .cat-지주 { background: #e0f2fe; color: #0369a1; }
@@ -260,10 +265,10 @@
   <div class="container">
     <div class="tab-list" role="tablist">
       <button class="tab-btn active" role="tab" data-tab="etf" aria-selected="true">
-        📈 ETF <span class="tab-badge" id="badge-etf">30</span>
+        📈 ETF <span class="tab-badge" id="badge-etf">41</span>
       </button>
       <button class="tab-btn" role="tab" data-tab="stock" aria-selected="false">
-        💰 배당주 <span class="tab-badge" id="badge-stock">24</span>
+        💰 배당주 <span class="tab-badge" id="badge-stock">33</span>
       </button>
       <button class="tab-btn" role="tab" data-tab="fund" aria-selected="false">
         🏦 공모펀드 <span class="tab-badge" id="badge-fund">8</span>
@@ -415,6 +420,22 @@ const DATA = {
     { name:'TIGER KOFR금리액티브(합성)',      code:'449170', cat:'채권',    manager:'미래에셋자산운용',  aum:3.8,  r1m:0.3,  r3m:0.9,  r1y:3.6,  fee:0.01, div:3.5, price:110855 },
     { name:'TIGER 미국채10년선물',            code:'305080', cat:'채권',    manager:'미래에셋자산운용',  aum:1.1,  r1m:-0.3, r3m:1.2,  r1y:3.8,  fee:0.29, div:3.5, price:13385  },
     { name:'KODEX 미국30년국채울트라선물(H)', code:'304660', cat:'채권',    manager:'삼성자산운용',      aum:0.4,  r1m:-0.8, r3m:2.1,  r1y:2.8,  fee:0.30, div:4.8, price:7450   },
+    { name:'TIGER 국고채3년',                code:'114260', cat:'채권',    manager:'미래에셋자산운용',  aum:1.5,  r1m:0.2,  r3m:0.7,  r1y:3.1,  fee:0.05, div:3.2, price:57850  },
+    // 배당(커버드콜/월배당)
+    { name:'TIGER 미국배당+7%프리미엄다우존스', code:'481070', cat:'배당', manager:'미래에셋자산운용',  aum:1.8,  r1m:1.2,  r3m:3.5,  r1y:10.2, fee:0.38, div:7.0, price:10255  },
+    { name:'KODEX 200고배당커버드콜ATM',     code:'461620', cat:'배당',    manager:'삼성자산운용',      aum:0.5,  r1m:1.5,  r3m:4.2,  r1y:11.5, fee:0.37, div:6.8, price:9855   },
+    // 섹터 추가
+    { name:'TIGER 방산',                     code:'460730', cat:'섹터',    manager:'미래에셋자산운용',  aum:0.8,  r1m:5.2,  r3m:18.5, r1y:62.3, fee:0.45, div:0.5, price:13850  },
+    { name:'TIGER 원자력테마',               code:'469070', cat:'섹터',    manager:'미래에셋자산운용',  aum:0.6,  r1m:8.5,  r3m:22.4, r1y:75.0, fee:0.49, div:0.4, price:18950  },
+    { name:'KODEX 바이오',                   code:'244580', cat:'섹터',    manager:'삼성자산운용',      aum:0.5,  r1m:2.1,  r3m:5.8,  r1y:18.4, fee:0.45, div:0.3, price:20240  },
+    // 원자재
+    { name:'KODEX 골드선물(H)',              code:'132030', cat:'원자재',  manager:'삼성자산운용',      aum:0.7,  r1m:3.8,  r3m:9.5,  r1y:22.1, fee:0.68, div:0.0, price:24180  },
+    // 해외주식 추가
+    { name:'TIGER 인도니프티50',             code:'453810', cat:'해외주식',manager:'미래에셋자산운용',  aum:0.9,  r1m:1.8,  r3m:5.2,  r1y:16.4, fee:0.59, div:0.8, price:14285  },
+    { name:'ACE 미국빅테크TOP7플러스',       code:'441800', cat:'해외주식',manager:'한국투자신탁운용',  aum:0.7,  r1m:4.2,  r3m:11.8, r1y:35.2, fee:0.25, div:0.5, price:16840  },
+    // 레버리지/인버스
+    { name:'KODEX 레버리지',                 code:'122630', cat:'레버리지',manager:'삼성자산운용',      aum:4.8,  r1m:6.1,  r3m:16.5, r1y:52.8, fee:0.64, div:0.0, price:29490  },
+    { name:'KODEX 인버스',                   code:'114800', cat:'인버스',  manager:'삼성자산운용',      aum:1.8,  r1m:-3.2, r3m:-8.8, r1y:-28.4,fee:0.59, div:0.0, price:3190   },
   ],
   stock: [
     // ── 보통주 ──────────────────────────────────────────────────────────────
@@ -443,6 +464,17 @@ const DATA = {
     { name:'삼성화재우',    code:'000815', cat:'보험',      per:12.2, pbr:0.72, div:5.1, divGrow:20, mcap:2.8,  buyback:false, price:379000, preferred:true  },
     { name:'LG전자우',      code:'066575', cat:'전자',      per:17.3, pbr:0.29, div:1.9, divGrow:8,  mcap:1.8,  buyback:false, price:73600,  preferred:true  },
     { name:'아모레퍼시픽우',code:'090435', cat:'소비재',    per:35.0, pbr:0.95, div:2.7, divGrow:3,  mcap:0.8,  buyback:false, price:45300,  preferred:true  },
+    // ── 보통주 추가 ──────────────────────────────────────────────────────────
+    { name:'기아',           code:'000270', cat:'자동차',  per:5.8,  pbr:0.65, div:2.1, divGrow:35, mcap:58.0, buyback:true,  price:241000, preferred:false },
+    { name:'LG유플러스',     code:'032640', cat:'통신',    per:9.2,  pbr:0.65, div:5.1, divGrow:5,  mcap:5.5,  buyback:false, price:12750,  preferred:false },
+    { name:'메리츠금융지주', code:'138040', cat:'금융',    per:6.2,  pbr:1.35, div:3.8, divGrow:50, mcap:18.0, buyback:true,  price:91400,  preferred:false },
+    { name:'JB금융지주',     code:'175330', cat:'금융',    per:5.1,  pbr:0.58, div:6.7, divGrow:20, mcap:3.2,  buyback:true,  price:17850,  preferred:false },
+    { name:'에쓰-오일',      code:'010950', cat:'에너지',  per:22.0, pbr:1.15, div:4.2, divGrow:8,  mcap:8.5,  buyback:false, price:74600,  preferred:false },
+    { name:'현대모비스',     code:'012330', cat:'자동차',  per:7.2,  pbr:0.61, div:2.2, divGrow:12, mcap:23.0, buyback:true,  price:285000, preferred:false },
+    { name:'NH투자증권',     code:'005940', cat:'증권',    per:9.5,  pbr:0.72, div:6.5, divGrow:15, mcap:4.5,  buyback:false, price:16400,  preferred:false },
+    { name:'DGB금융지주',    code:'139130', cat:'금융',    per:4.8,  pbr:0.44, div:7.2, divGrow:12, mcap:1.8,  buyback:false, price:11350,  preferred:false },
+    // ── 우선주 추가 ──────────────────────────────────────────────────────────
+    { name:'기아우',         code:'000272', cat:'자동차',  per:5.8,  pbr:0.42, div:3.5, divGrow:35, mcap:2.2,  buyback:false, price:145500, preferred:true  },
   ],
   fund: [
     { name:'미래에셋 글로벌혁신기업', cat:'글로벌주식', manager:'미래에셋자산운용',    r1y:22.1, r3y:48.2, fee:1.85, aum:8200  },
@@ -483,6 +515,16 @@ const STOCK_FUNDAMENTALS = {
   '000815': { eps: 41360, annualDiv: 19505 }, // 삼성화재우
   '066575': { eps: 10706, annualDiv: 1400 },  // LG전자우
   '090435': { eps: 1294,  annualDiv: 1245 },  // 아모레퍼시픽우
+  // 추가 종목
+  '000270': { eps: 41400,  annualDiv: 5000  },  // 기아
+  '032640': { eps: 1385,   annualDiv: 650   },  // LG유플러스
+  '138040': { eps: 14738,  annualDiv: 3500  },  // 메리츠금융지주
+  '175330': { eps: 3490,   annualDiv: 1200  },  // JB금융지주
+  '010950': { eps: 3391,   annualDiv: 3100  },  // 에쓰-오일
+  '012330': { eps: 39570,  annualDiv: 6200  },  // 현대모비스
+  '005940': { eps: 1726,   annualDiv: 1050  },  // NH투자증권
+  '139130': { eps: 2361,   annualDiv: 820   },  // DGB금융지주
+  '000272': { eps: 41400,  annualDiv: 5100  },  // 기아우
 };
 
 let liveDataLoaded = false;
@@ -838,6 +880,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
 updateFilters();
 renderTable();
 fetchLivePrices();
+setInterval(fetchLivePrices, 5 * 60 * 1000);
 </script>
 </body>
 </html>
