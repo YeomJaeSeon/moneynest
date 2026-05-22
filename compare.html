@@ -129,6 +129,12 @@
       font-size:.66rem; font-weight:700; padding:1px 5px;
       border-radius:5px; vertical-align:middle; margin-left:4px;
     }
+    .value-div-badge {
+      display:inline-block; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#92400e;
+      font-size:.65rem; font-weight:700; padding:1px 6px;
+      border-radius:5px; vertical-align:middle; margin-left:4px;
+      border:1px solid #fcd34d;
+    }
     .price-col { font-size:.85rem; color:#334155; font-weight:700; }
     .buyback-yes { display: inline-flex; align-items: center; gap: 3px; background: #d1fae5; color: #065f46; font-size: .73rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
     .buyback-no { color: var(--gray-4); font-size: .82rem; }
@@ -289,6 +295,13 @@
       </select>
       <select class="filter-select" id="manager-filter" aria-label="운용사 필터">
         <option value="">전체 운용사</option>
+      </select>
+      <select class="filter-select" id="cycle-filter" aria-label="경기사이클 필터" style="display:none;">
+        <option value="">전체 경기단계</option>
+        <option value="회복기">🟢 회복기</option>
+        <option value="과열기">🟠 과열기</option>
+        <option value="침체기">🔵 침체기</option>
+        <option value="불황기">🟣 불황기</option>
       </select>
       <span class="result-count" id="result-count">총 30개</span>
     </div>
@@ -616,8 +629,15 @@ const HEADS = {
   ]
 };
 
+const CYCLE_SECTORS = {
+  '회복기':  ['IT·반도체','금융','산업재','자동차','전자'],
+  '과열기':  ['에너지','소재','인프라','보험','지주'],
+  '침체기':  ['통신','헬스케어','소비재','인프라','레저'],
+  '불황기':  ['통신','소비재','보험','인프라','지주'],
+};
+
 let state = {
-  tab: 'etf', search: '', cat: '', manager: '',
+  tab: 'etf', search: '', cat: '', manager: '', cycle: '',
   sortKey: null, sortDir: 'desc', selected: []
 };
 
@@ -654,6 +674,11 @@ function updateFilters() {
   } else {
     manSel.style.display = 'none';
   }
+  const cycleSel = document.getElementById('cycle-filter');
+  cycleSel.style.display = state.tab === 'stock' ? '' : 'none';
+  if (state.tab === 'stock') {
+    cycleSel.value = state.cycle || '';
+  }
 }
 
 function getFiltered() {
@@ -662,6 +687,10 @@ function getFiltered() {
   if (q) data = data.filter(d => d.name.toLowerCase().includes(q) || (d.code && d.code.includes(q)));
   if (state.cat) data = data.filter(d => d.cat === state.cat);
   if (state.manager && state.tab !== 'stock') data = data.filter(d => d.manager === state.manager);
+  if (state.cycle && state.tab === 'stock') {
+    const sectors = CYCLE_SECTORS[state.cycle] || [];
+    data = data.filter(d => sectors.some(s => d.cat.includes(s)));
+  }
   if (state.sortKey) {
     data.sort((a, b) => {
       const av = a[state.sortKey], bv = b[state.sortKey];
@@ -723,7 +752,8 @@ function renderTable() {
       cells += `<td class="text-right">${d.div > 0 ? '<span style="color:#059669;font-weight:700;">' + d.div.toFixed(1) + '%</span>' : '<span style="color:var(--gray-4);">-</span>'}</td>`;
     } else if (state.tab === 'stock') {
       const prefBadge = d.preferred ? ' <span class="pref-badge">우선주</span>' : '';
-      cells += `<td><div class="item-name">${d.name}${prefBadge}</div><div class="item-code">${d.code}</div></td>`;
+      const valueDivBadge = (d.pbr < 1.0 && d.div >= 4.0 && d.divGrow >= 10) ? ' <span class="value-div-badge">⭐ 가치배당주</span>' : '';
+      cells += `<td><div class="item-name">${d.name}${prefBadge}${valueDivBadge}</div><div class="item-code">${d.code}</div></td>`;
       cells += `<td><span class="cat-tag cat-${d.cat.replace('·','-')}">${d.cat}</span></td>`;
       cells += `<td class="text-right price-col">${priceFmt(d.price)}</td>`;
       const perColor = d.per <= 8 ? '#059669' : d.per <= 15 ? '#d97706' : '#dc2626';
@@ -852,7 +882,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
     btn.classList.add('active'); btn.setAttribute('aria-selected','true');
     state.tab = btn.dataset.tab;
-    state.search = ''; state.cat = ''; state.manager = ''; state.sortKey = null;
+    state.search = ''; state.cat = ''; state.manager = ''; state.cycle = ''; state.sortKey = null;
     document.getElementById('search-input').value = '';
     document.getElementById('tab-info').innerHTML = TAB_INFO[state.tab];
     updateFilters(); renderTable();
@@ -862,6 +892,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 document.getElementById('search-input').addEventListener('input', e => { state.search = e.target.value; renderTable(); });
 document.getElementById('cat-filter').addEventListener('change', e => { state.cat = e.target.value; renderTable(); });
 document.getElementById('manager-filter').addEventListener('change', e => { state.manager = e.target.value; renderTable(); });
+document.getElementById('cycle-filter').addEventListener('change', e => { state.cycle = e.target.value; renderTable(); });
 document.getElementById('btn-do-compare').addEventListener('click', openModal);
 document.getElementById('btn-clear').addEventListener('click', () => {
   state.selected = [];
