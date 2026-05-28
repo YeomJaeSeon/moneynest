@@ -1,0 +1,17 @@
+{
+  "name": "머니네스트",
+  "short_name": "머니네스트",
+  "description": "ETF·배당주·절세 정보를 한눈에 비교하는 개인 재무 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

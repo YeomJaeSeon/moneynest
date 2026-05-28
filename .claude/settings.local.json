@@ -7,7 +7,8 @@
       "Bash(vercel --prod)",
       "Bash(curl -s \"https://moneynest-omega.vercel.app/api/prices?codes=105560,069500\")",
       "Bash(curl -s \"https://moneynest-omega.vercel.app/google6bfe865f0f272a9e.html\")",
-      "Bash(curl -s \"https://moneynest-omega.vercel.app/naverd3dceed0c05ec7a8a4e02305fd12e211.html\")"
+      "Bash(curl -s \"https://moneynest-omega.vercel.app/naverd3dceed0c05ec7a8a4e02305fd12e211.html\")",
+      "Bash(curl -s \"https://moneynest-omega.vercel.app/\")"
     ]
   }
 }

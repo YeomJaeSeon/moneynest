@@ -107,6 +107,12 @@ strong { font-weight: 700; color: var(--dark); }
   display: flex; align-items: center; justify-content: center;
   color: white; font-size: 1.1rem; font-weight: 900;
 }
+img.logo-icon {
+  background: none;
+  display: block;
+  object-fit: cover;
+  flex-shrink: 0;
+}
 .logo-text { font-size: 1.2rem; font-weight: 900; color: var(--dark); }
 .logo-text span { color: var(--blue-mid); }
 
@@ -418,6 +424,12 @@ strong { font-weight: 700; color: var(--dark); }
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   color: white; font-size: .95rem; font-weight: 900;
+}
+img.footer-logo-icon {
+  background: none;
+  display: block;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 .footer-logo-text { font-size: 1.1rem; font-weight: 900; color: white; }
 .footer-brand p { font-size: .85rem; line-height: 1.7; margin-bottom: 0; }
